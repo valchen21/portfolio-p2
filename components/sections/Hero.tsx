@@ -437,20 +437,20 @@ export default function Hero() {
       {/* 8-ball physics bubbles */}
       <FloatingBubbles />
 
-      {/* Handwriting note */}
+      {/* Welcome note */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 1.8, ease: [0.43, 0.195, 0.02, 1] }}
         className="absolute hidden lg:block pointer-events-none"
-        style={{ left: "68%", top: "60%", zIndex: 20 }}
+        style={{ left: "62%", top: "45%", zIndex: 20 }}
       >
         <Image
-          src="/Landing Page/Handwriting Note.png"
-          alt="Handwriting note"
+          src="/Landing Page/Welcome!.png"
+          alt="Welcome"
           width={600}
-          height={300}
-          className="w-[340px] h-auto"
+          height={400}
+          className="w-[320px] h-auto"
         />
       </motion.div>
 
