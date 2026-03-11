@@ -68,35 +68,38 @@ function HeroBackground() {
   );
 }
 
-// ── 8-ball physics bubbles ────────────────────────────────────────────────────
+// ── Glass physics bubbles ─────────────────────────────────────────────────────
 
 const BUBBLES = [
-  { label: "Product",  color: "#5BAECC" }, // teal
-  { label: "Growth",   color: "#D4874A" }, // amber
-  { label: "Design",   color: "#9B7FD4" }, // violet
-  { label: "Strategy", color: "#4A8B6A" }, // green
-  { label: "Brand",    color: "#CC5B7A" }, // rose
-  { label: "Culture",  color: "#C4A44A" }, // gold
+  { label: "Product",  color: "#5BAECC" },
+  { label: "Growth",   color: "#D4874A" },
+  { label: "Design",   color: "#9B7FD4" },
+  { label: "Strategy", color: "#4A8B6A" },
+  { label: "Brand",    color: "#CC5B7A" },
+  { label: "Culture",  color: "#C4A44A" },
 ];
 const BUBBLE_LABELS = BUBBLES.map((b) => b.label);
-const R = 48; // radius px
+const R = 52; // radius px
 const FRICTION = 0.987;
 const RESTITUTION = 0.60;
 
 interface BallState {
   x: number; y: number;
   vx: number; vy: number;
-  rotX: number; rotY: number; // cumulative 3D rotation in degrees
   dragging: boolean;
   dragOffsetX: number; dragOffsetY: number;
 }
 
-const RAD_TO_DEG = 180 / Math.PI;
+function hexRgb(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
+}
 
 function FloatingBubbles() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const elRefs   = useRef<(HTMLDivElement | null)[]>([]); // outer wrapper (translate)
-  const sphereRefs = useRef<(HTMLDivElement | null)[]>([]); // inner sphere (rotate)
+  const elRefs = useRef<(HTMLDivElement | null)[]>([]);
   const balls = useRef<BallState[]>([]);
   const rafId = useRef<number | null>(null);
   const ptrHistory = useRef<{ x: number; y: number; t: number }[]>([]);
@@ -121,18 +124,13 @@ function FloatingBubbles() {
       x, y,
       vx: (Math.random() - 0.5) * 1.2,
       vy: (Math.random() - 0.5) * 1.2,
-      rotX: Math.random() * 360,
-      rotY: Math.random() * 360,
       dragging: false,
       dragOffsetX: 0, dragOffsetY: 0,
     }));
 
-    // Set initial DOM positions
     balls.current.forEach((b, i) => {
       const el = elRefs.current[i];
-      const sp = sphereRefs.current[i];
       if (el) el.style.transform = `translate(${b.x - R}px, ${b.y - R}px)`;
-      if (sp) sp.style.transform = `perspective(200px) rotateX(${b.rotX}deg) rotateY(${b.rotY}deg)`;
     });
 
     const tick = () => {
@@ -147,18 +145,12 @@ function FloatingBubbles() {
         bs[i].x += bs[i].vx;
         bs[i].y += bs[i].vy;
 
-        // Rolling rotation: angular velocity = linear velocity / R
-        bs[i].rotX += (bs[i].vy / R) * RAD_TO_DEG;
-        bs[i].rotY -= (bs[i].vx / R) * RAD_TO_DEG;
-
-        // Wall bounce
         if (bs[i].x < R)      { bs[i].x = R;      bs[i].vx =  Math.abs(bs[i].vx) * RESTITUTION; }
         if (bs[i].x > cW - R) { bs[i].x = cW - R; bs[i].vx = -Math.abs(bs[i].vx) * RESTITUTION; }
         if (bs[i].y < R)      { bs[i].y = R;       bs[i].vy =  Math.abs(bs[i].vy) * RESTITUTION; }
         if (bs[i].y > cH - R) { bs[i].y = cH - R;  bs[i].vy = -Math.abs(bs[i].vy) * RESTITUTION; }
       }
 
-      // Ball-ball elastic collisions
       for (let i = 0; i < bs.length; i++) {
         for (let j = i + 1; j < bs.length; j++) {
           const dx = bs[j].x - bs[i].x;
@@ -188,13 +180,10 @@ function FloatingBubbles() {
         }
       }
 
-      // Update DOM
       for (let i = 0; i < bs.length; i++) {
         if (!bs[i].dragging) {
           const el = elRefs.current[i];
-          const sp = sphereRefs.current[i];
           if (el) el.style.transform = `translate(${bs[i].x - R}px, ${bs[i].y - R}px)`;
-          if (sp) sp.style.transform = `perspective(200px) rotateX(${bs[i].rotX}deg) rotateY(${bs[i].rotY}deg)`;
         }
       }
 
@@ -203,7 +192,6 @@ function FloatingBubbles() {
 
     rafId.current = requestAnimationFrame(tick);
 
-    // Staggered fade-in
     BUBBLE_LABELS.forEach((_, i) => {
       setTimeout(() => {
         const el = elRefs.current[i];
@@ -239,21 +227,13 @@ function FloatingBubbles() {
     const lx = e.clientX - rect.left;
     const ly = e.clientY - rect.top;
 
-    // Spin from drag motion
-    const dx = lx - b.dragOffsetX - b.x;
-    const dy = ly - b.dragOffsetY - b.y;
-    b.rotX += (dy / R) * RAD_TO_DEG;
-    b.rotY -= (dx / R) * RAD_TO_DEG;
-
     b.x = lx - b.dragOffsetX;
     b.y = ly - b.dragOffsetY;
     ptrHistory.current.push({ x: lx, y: ly, t: performance.now() });
     if (ptrHistory.current.length > 6) ptrHistory.current.shift();
 
     const el = elRefs.current[i];
-    const sp = sphereRefs.current[i];
     if (el) el.style.transform = `translate(${b.x - R}px, ${b.y - R}px)`;
-    if (sp) sp.style.transform = `perspective(200px) rotateX(${b.rotX}deg) rotateY(${b.rotY}deg)`;
   };
 
   const onPointerUp = (i: number) => (_e: React.PointerEvent<HTMLDivElement>) => {
@@ -297,6 +277,7 @@ function FloatingBubbles() {
             left: 0,
             width: R * 2,
             height: R * 2,
+            borderRadius: "50%",
             opacity: 0,
             transition: "opacity 0.5s ease",
             cursor: "grab",
@@ -304,46 +285,32 @@ function FloatingBubbles() {
             touchAction: "none",
             userSelect: "none",
             zIndex: 20,
+            // Glass styling
+            background: `rgba(${hexRgb(color)}, 0.07)`,
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: `1px solid rgba(${hexRgb(color)}, 0.22)`,
+            boxShadow: `
+              0 4px 24px rgba(0,0,0,0.25),
+              inset 0 1px 0 rgba(255,255,255,0.08),
+              inset 0 -1px 0 rgba(${hexRgb(color)}, 0.1)
+            `,
           }}
         >
-          {/* 3D rotating sphere surface — color stripe rolls with ball */}
-          <div
-            ref={(el) => { sphereRefs.current[i] = el; }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "50%",
-              background: `
-                linear-gradient(135deg,
-                  ${color}44 0%,
-                  ${color}22 25%,
-                  transparent 45%,
-                  transparent 55%,
-                  ${color}11 75%,
-                  transparent 100%
-                ),
-                radial-gradient(circle at 58% 62%, rgba(0,0,0,0.55) 0%, transparent 60%),
-                #141210
-              `,
-              boxShadow: `inset 0 0 0 1px ${color}33, 0 6px 28px rgba(0,0,0,0.6), 0 0 20px ${color}22`,
-            }}
-          />
-
-          {/* Fixed specular highlight — stays in screen space */}
+          {/* Subtle top gloss */}
           <div
             style={{
               position: "absolute",
-              inset: 0,
+              top: "10%",
+              left: "15%",
+              width: "70%",
+              height: "35%",
               borderRadius: "50%",
-              background: `
-                radial-gradient(circle at 30% 26%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 28%, transparent 50%),
-                radial-gradient(circle at 68% 72%, ${color}18 0%, transparent 40%)
-              `,
+              background: `radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.12) 0%, transparent 80%)`,
               pointerEvents: "none",
             }}
           />
-
-          {/* Label — always faces camera */}
+          {/* Label */}
           <div
             style={{
               position: "absolute",
@@ -358,11 +325,11 @@ function FloatingBubbles() {
               style={{
                 fontSize: "11px",
                 fontWeight: 600,
-                letterSpacing: "0.06em",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
                 color: color,
                 textAlign: "center",
                 lineHeight: 1.2,
-                textShadow: `0 0 12px ${color}66`,
               }}
             >
               {label}
@@ -431,21 +398,28 @@ function RotatingPhrase({ delay }: { delay: number }) {
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
-        style={{ display: "flex", alignItems: "baseline" }}
+        style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}
       >
         <span className={`${smallText} text-[#F5EFE8]`}>
-          Building things&nbsp;
+          Building things people&nbsp;
         </span>
-        <div style={{ overflow: "hidden" }}>
+        {/* Fixed-width container prevents layout shift when phrase length changes */}
+        <div
+          className={`${smallText} lg:min-w-[33vw] xl:min-w-[30vw]`}
+          style={{ overflow: "hidden" }}
+        >
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={index}
-              initial={animating ? { y: "-105%" } : false}
-              animate={{ y: "0%" }}
-              exit={{ y: "105%" }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              initial={animating ? { y: "-105%", opacity: 1 } : false}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "0%", opacity: 0 }}
+              transition={{
+                y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+                opacity: { duration: 0.1, ease: "easeIn" },
+              }}
               style={{ display: "block", color: "#5BAECC", whiteSpace: "nowrap" }}
-              className={`${smallText} italic`}
+              className="italic"
             >
               {PHRASES[index]}
             </motion.span>
