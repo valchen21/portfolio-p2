@@ -112,7 +112,7 @@ function FloatingBubbles() {
     const H = container.clientHeight;
 
     const seeds = [
-      { x: W * 0.08, y: H * 0.18 },
+      { x: W * 0.08, y: H * 0.50 },
       { x: W * 0.84, y: H * 0.13 },
       { x: W * 0.80, y: H * 0.48 },
       { x: W * 0.87, y: H * 0.78 },
@@ -262,7 +262,7 @@ function FloatingBubbles() {
     <div
       ref={containerRef}
       className="absolute inset-0 hidden lg:block"
-      style={{ zIndex: 15, pointerEvents: "none" }}
+      style={{ zIndex: 18, pointerEvents: "none" }}
     >
       {BUBBLES.map(({ label, color }, i) => (
         <div
@@ -401,19 +401,29 @@ function RotatingPhrase({ delay }: { delay: number }) {
         <span className={`${smallText} text-[#F5EFE8] block`}>
           Building things
         </span>
-        <div style={{ overflow: "hidden", width: "100%" }}>
-          <AnimatePresence mode="popLayout" initial={false}>
+        {/* Fixed-height container — em resolves against smallText font-size; phrase absolutely positioned so it never affects layout */}
+        <div
+          className={smallText}
+          style={{ position: "relative", overflow: "hidden", width: "100%", height: "1.3em" }}
+        >
+          <AnimatePresence initial={false}>
             <motion.span
               key={index}
-              initial={animating ? { y: "-105%", opacity: 1 } : false}
+              initial={animating ? { y: "-110%", opacity: 1 } : { y: 0, opacity: 1 }}
               animate={{ y: "0%", opacity: 1 }}
               exit={{ y: "0%", opacity: 0 }}
               transition={{
                 y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-                opacity: { duration: 0.1, ease: "easeIn" },
+                opacity: { duration: 0.08, ease: "easeIn" },
               }}
-              style={{ display: "block", color: PHRASES[index].color, whiteSpace: "nowrap", overflow: "hidden", width: "100%" }}
-              className={`${smallText} italic`}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                color: PHRASES[index].color,
+                whiteSpace: "nowrap",
+              }}
+              className="italic"
             >
               {PHRASES[index].text}
             </motion.span>
@@ -443,14 +453,14 @@ export default function Hero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 1.8, ease: [0.43, 0.195, 0.02, 1] }}
         className="absolute hidden lg:block pointer-events-none"
-        style={{ left: "62%", top: "45%", zIndex: 20 }}
+        style={{ right: "3%", top: "25%", transform: "translateY(-50%)", zIndex: 14 }}
       >
         <Image
           src="/Landing Page/Welcome!.png"
           alt="Welcome"
-          width={600}
-          height={400}
-          className="w-[320px] h-auto"
+          width={1000}
+          height={700}
+          className="w-[680px] h-auto"
         />
       </motion.div>
 
