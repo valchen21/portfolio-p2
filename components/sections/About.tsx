@@ -24,7 +24,7 @@ const HOBBY_DETAILS: Record<string, HobbyDetail> = {
     desc: "My favorite director from when my dad made me watch his films as a kid. Fell in love with the cinematography. It felt like looking at art.",
     linkLabel: "Watch this →",
     href: "https://www.youtube.com/watch?v=XNdalPtWBVw",
-    image: "/Landing Page/Wong Kar Wai Pop Up.jpg",
+    image: "/Landing Page/wong kar wai.PNG",
   },
   "LEGOs": {
     desc: "I must have the Notre Dame set from Lego Architecture. Can't wait to fill my future home with these sets.",
