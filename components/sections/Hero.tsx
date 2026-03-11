@@ -377,16 +377,16 @@ function FloatingBubbles() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PHRASES = [
-  "people love.",
-  "people use.",
-  "people share.",
-  "people obsess over.",
-  "people come back to.",
-  "people talk about.",
-  "people build with.",
-  "people remember.",
-  "people can't ignore.",
-  "people care about.",
+  { text: "people love.",         color: "#5BAECC" }, // teal
+  { text: "people use.",          color: "#D4874A" }, // amber
+  { text: "people share.",        color: "#9B7FD4" }, // violet
+  { text: "people obsess over.",  color: "#CC5B7A" }, // rose
+  { text: "people come back to.", color: "#4AB8A0" }, // mint
+  { text: "people talk about.",   color: "#C4A44A" }, // gold
+  { text: "people build with.",   color: "#7EC86A" }, // green
+  { text: "people remember.",     color: "#CC8B5B" }, // warm orange
+  { text: "people can't ignore.", color: "#6A8BCC" }, // blue
+  { text: "people care about.",   color: "#B45BCC" }, // purple
 ];
 
 // Headline line — slides up one by one
@@ -427,12 +427,15 @@ function RotatingPhrase({ delay }: { delay: number }) {
     return () => clearInterval(interval);
   }, [animating]);
 
+  const current = PHRASES[index];
+
   return (
-    <div className="overflow-visible pb-2" style={{ perspective: "600px" }}>
+    <div className="overflow-visible pb-2">
       <motion.div
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
+        style={{ perspective: "800px" }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -440,11 +443,16 @@ function RotatingPhrase({ delay }: { delay: number }) {
             initial={animating ? { rotateX: -90, opacity: 0 } : false}
             animate={{ rotateX: 0, opacity: 1 }}
             exit={{ rotateX: 90, opacity: 0 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: "block", transformOrigin: "50% 50%" }}
-            className="font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[1.05] tracking-[-0.03em] font-bold italic text-[#5BAECC]"
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              display: "block",
+              transformOrigin: "50% 100%",
+              color: current.color,
+              whiteSpace: "nowrap",
+            }}
+            className="font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[1.05] tracking-[-0.03em] font-bold italic"
           >
-            {PHRASES[index]}
+            {current.text}
           </motion.span>
         </AnimatePresence>
       </motion.div>
