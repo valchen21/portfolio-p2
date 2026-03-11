@@ -407,46 +407,41 @@ function HeadlineLine({ text, delay, italic }: { text: string; delay: number; it
   );
 }
 
-// Rotating second line — 3D drum roll downward
+// Rotating second line — slot machine roll downward
 function RotatingPhrase({ delay }: { delay: number }) {
   const [index, setIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
-    const startTimer = setTimeout(() => {
-      setAnimating(true);
-    }, (delay + 1.5) * 1000);
-    return () => clearTimeout(startTimer);
+    const t = setTimeout(() => setAnimating(true), (delay + 1.5) * 1000);
+    return () => clearTimeout(t);
   }, [delay]);
 
   useEffect(() => {
     if (!animating) return;
-    const interval = setInterval(() => {
-      setIndex((i) => (i + 1) % PHRASES.length);
-    }, 2500);
-    return () => clearInterval(interval);
+    const id = setInterval(() => setIndex((i) => (i + 1) % PHRASES.length), 2500);
+    return () => clearInterval(id);
   }, [animating]);
 
   const current = PHRASES[index];
 
   return (
-    <div className="overflow-visible pb-2">
+    <div className="pb-2">
       <motion.div
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
-        style={{ perspective: "800px" }}
+        style={{ overflow: "hidden" }}
       >
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={index}
-            initial={animating ? { rotateX: -90, opacity: 0 } : false}
-            animate={{ rotateX: 0, opacity: 1 }}
-            exit={{ rotateX: 90, opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            initial={animating ? { y: "-105%" } : false}
+            animate={{ y: "0%" }}
+            exit={{ y: "105%" }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               display: "block",
-              transformOrigin: "50% 100%",
               color: current.color,
               whiteSpace: "nowrap",
             }}
