@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { experience, education, skills, siteConfig } from "@/data/content";
+import { experience, education, skills } from "@/data/content";
 
 function SectionLabel({ number, label }: { number: string; label: string }) {
   return (
@@ -122,9 +122,6 @@ function EducationCard({ edu, index }: { edu: (typeof education)[0]; index: numb
       <div>
         <h4 className="text-sm font-semibold text-[#F5EFE8]">{edu.degree}</h4>
         <p className="text-xs text-[#5BAECC] font-medium mt-0.5">{edu.institution}</p>
-        {edu.focus && (
-          <p className="text-xs text-[#8B8178] mt-0.5">{edu.focus}</p>
-        )}
         <div className="flex items-center gap-2 mt-2">
           <span className="text-[10px] text-[#4A4540]">{edu.period}</span>
           {edu.note && (
@@ -181,7 +178,7 @@ export default function Resume() {
             </h2>
 
             <button
-              onClick={() => window.open(siteConfig.resumeUrl, "_blank")}
+              onClick={() => window.dispatchEvent(new Event("openResume"))}
               className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#5BAECC]/40 text-[#5BAECC] text-sm font-medium hover:bg-[#5BAECC] hover:text-[#0A0908] transition-all duration-300 self-start md:self-auto"
             >
               <span>Download Resume</span>

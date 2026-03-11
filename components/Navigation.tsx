@@ -120,7 +120,7 @@ export default function Navigation() {
             })}
 
             <button
-              onClick={() => window.open(siteConfig.resumeUrl, "_blank")}
+              onClick={() => window.dispatchEvent(new Event("openResume"))}
               className="ml-3 px-4 py-2 text-sm font-medium rounded-full border border-[#5BAECC]/40 text-[#5BAECC] hover:bg-[#5BAECC]/10 hover:border-[#5BAECC]/70transition-all duration-200"
             >
               Resume ↗
@@ -177,7 +177,7 @@ export default function Navigation() {
               ))}
               <div className="h-px bg-[#252118] my-2" />
               <button
-                onClick={() => window.open(siteConfig.resumeUrl, "_blank")}
+                onClick={() => window.dispatchEvent(new Event("openResume"))}
                 className="text-left px-4 py-3 text-base font-medium text-[#5BAECC] hover:bg-[#5BAECC]/10 rounded-lg transition-all duration-200"
               >
                 Download Resume ↗

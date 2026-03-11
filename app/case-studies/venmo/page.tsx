@@ -172,7 +172,7 @@ export default function VenmoCaseStudy() {
               <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}
                 className="rounded-2xl overflow-hidden border border-[#252118]">
                 <Image
-                  src="/Venmo Storefronts Cover.png"
+                  src="/Venmo/Venmo Storefronts Cover.png"
                   alt="Venmo Storefronts Cover"
                   width={1200}
                   height={675}

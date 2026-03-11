@@ -15,13 +15,13 @@ type HobbyDetail = {
 
 const HOBBY_DETAILS: Record<string, HobbyDetail> = {
   "Vietnamese egg coffee": {
-    desc: "THE best coffee and it always gets me going — still trying to figure out how to make it at home.",
+    desc: "THE best coffee and it always gets me going. Still trying to figure out how to make it at home.",
     linkLabel: "See the recipe →",
     href: "https://www.hummingbirdhigh.com/2022/05/vietnamese-egg-coffee.html",
     image: "/Landing Page/Egg Coffee.jpg",
   },
   "Wong Kar Wai films": {
-    desc: "My favorite director from when my dad made me watch his films as a kid. Fell in love with the cinematography — it felt like looking at art.",
+    desc: "My favorite director from when my dad made me watch his films as a kid. Fell in love with the cinematography. It felt like looking at art.",
     linkLabel: "Watch this →",
     href: "https://www.youtube.com/watch?v=XNdalPtWBVw",
     image: "/Landing Page/Wong Kar Wai Pop Up.jpg",
@@ -93,7 +93,7 @@ function HobbyTag({ label }: { label: string }) {
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative inline-block">
       <button
         onClick={handleClick}
         className={`px-3 py-1.5 rounded-full text-xs font-medium border bg-[#0A0908] transition-all duration-200 cursor-pointer ${
@@ -107,11 +107,11 @@ function HobbyTag({ label }: { label: string }) {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            initial={{ opacity: 0, y: 8, scale: 0.97, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+            exit={{ opacity: 0, y: 8, scale: 0.97, x: "-50%" }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-52 z-50"
+            className="absolute bottom-full left-1/2 mb-3 w-52 z-50"
           >
             <div className="rounded-xl border border-[#252118] bg-[#141210] overflow-hidden shadow-xl shadow-black/60">
               {/* 1:1 photo */}

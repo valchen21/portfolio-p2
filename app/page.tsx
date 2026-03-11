@@ -7,11 +7,13 @@ import Resume from "@/components/sections/Resume";
 import About from "@/components/sections/About";
 import Footer from "@/components/sections/Footer";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import ResumeModal from "@/components/ui/ResumeModal";
 
 export default function Home() {
   return (
     <main>
       <ScrollProgress />
+      <ResumeModal />
       <Navigation />
       <Hero />
       <Projects />

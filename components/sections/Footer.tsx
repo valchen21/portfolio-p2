@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { siteConfig } from "@/data/content";
 
 function scrollTo(href: string) {
@@ -18,7 +17,6 @@ const navLinks = [
 const socialLinks = [
   { label: "LinkedIn", href: siteConfig.linkedin },
   { label: "GitHub", href: siteConfig.github },
-  { label: "Twitter", href: siteConfig.twitter },
   { label: "Email", href: `mailto:${siteConfig.email}` },
 ];
 

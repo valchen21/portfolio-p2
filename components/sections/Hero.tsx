@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { siteConfig, disciplines } from "@/data/content";
 
 function scrollTo(href: string) {
@@ -66,43 +68,323 @@ function HeroBackground() {
   );
 }
 
-// Floating discipline card
-function DisciplineTag({ label, delay, x, y }: { label: string; delay: number; x: number; y: number }) {
+// ── 8-ball physics bubbles ────────────────────────────────────────────────────
+
+const BUBBLES = [
+  { label: "Product",  color: "#5BAECC" }, // teal
+  { label: "Growth",   color: "#D4874A" }, // amber
+  { label: "Design",   color: "#9B7FD4" }, // violet
+  { label: "Strategy", color: "#4A8B6A" }, // green
+  { label: "Brand",    color: "#CC5B7A" }, // rose
+  { label: "Culture",  color: "#C4A44A" }, // gold
+];
+const BUBBLE_LABELS = BUBBLES.map((b) => b.label);
+const R = 48; // radius px
+const FRICTION = 0.987;
+const RESTITUTION = 0.60;
+
+interface BallState {
+  x: number; y: number;
+  vx: number; vy: number;
+  rotX: number; rotY: number; // cumulative 3D rotation in degrees
+  dragging: boolean;
+  dragOffsetX: number; dragOffsetY: number;
+}
+
+const RAD_TO_DEG = 180 / Math.PI;
+
+function FloatingBubbles() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const elRefs   = useRef<(HTMLDivElement | null)[]>([]); // outer wrapper (translate)
+  const sphereRefs = useRef<(HTMLDivElement | null)[]>([]); // inner sphere (rotate)
+  const balls = useRef<BallState[]>([]);
+  const rafId = useRef<number | null>(null);
+  const ptrHistory = useRef<{ x: number; y: number; t: number }[]>([]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const W = container.clientWidth;
+    const H = container.clientHeight;
+
+    const seeds = [
+      { x: W * 0.08, y: H * 0.18 },
+      { x: W * 0.84, y: H * 0.13 },
+      { x: W * 0.80, y: H * 0.48 },
+      { x: W * 0.87, y: H * 0.78 },
+      { x: W * 0.10, y: H * 0.75 },
+      { x: W * 0.54, y: H * 0.88 },
+    ];
+
+    balls.current = seeds.map(({ x, y }) => ({
+      x, y,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2,
+      rotX: Math.random() * 360,
+      rotY: Math.random() * 360,
+      dragging: false,
+      dragOffsetX: 0, dragOffsetY: 0,
+    }));
+
+    // Set initial DOM positions
+    balls.current.forEach((b, i) => {
+      const el = elRefs.current[i];
+      const sp = sphereRefs.current[i];
+      if (el) el.style.transform = `translate(${b.x - R}px, ${b.y - R}px)`;
+      if (sp) sp.style.transform = `perspective(200px) rotateX(${b.rotX}deg) rotateY(${b.rotY}deg)`;
+    });
+
+    const tick = () => {
+      const cW = container.clientWidth;
+      const cH = container.clientHeight;
+      const bs = balls.current;
+
+      for (let i = 0; i < bs.length; i++) {
+        if (bs[i].dragging) continue;
+        bs[i].vx *= FRICTION;
+        bs[i].vy *= FRICTION;
+        bs[i].x += bs[i].vx;
+        bs[i].y += bs[i].vy;
+
+        // Rolling rotation: angular velocity = linear velocity / R
+        bs[i].rotX += (bs[i].vy / R) * RAD_TO_DEG;
+        bs[i].rotY -= (bs[i].vx / R) * RAD_TO_DEG;
+
+        // Wall bounce
+        if (bs[i].x < R)      { bs[i].x = R;      bs[i].vx =  Math.abs(bs[i].vx) * RESTITUTION; }
+        if (bs[i].x > cW - R) { bs[i].x = cW - R; bs[i].vx = -Math.abs(bs[i].vx) * RESTITUTION; }
+        if (bs[i].y < R)      { bs[i].y = R;       bs[i].vy =  Math.abs(bs[i].vy) * RESTITUTION; }
+        if (bs[i].y > cH - R) { bs[i].y = cH - R;  bs[i].vy = -Math.abs(bs[i].vy) * RESTITUTION; }
+      }
+
+      // Ball-ball elastic collisions
+      for (let i = 0; i < bs.length; i++) {
+        for (let j = i + 1; j < bs.length; j++) {
+          const dx = bs[j].x - bs[i].x;
+          const dy = bs[j].y - bs[i].y;
+          const distSq = dx * dx + dy * dy;
+          const minDist = R * 2;
+
+          if (distSq < minDist * minDist && distSq > 0) {
+            const dist = Math.sqrt(distSq);
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (minDist - dist) / 2;
+
+            if (!bs[i].dragging) { bs[i].x -= nx * overlap; bs[i].y -= ny * overlap; }
+            if (!bs[j].dragging) { bs[j].x += nx * overlap; bs[j].y += ny * overlap; }
+
+            const dvx = bs[i].vx - bs[j].vx;
+            const dvy = bs[i].vy - bs[j].vy;
+            const dot = dvx * nx + dvy * ny;
+
+            if (dot > 0) {
+              const imp = dot * RESTITUTION;
+              if (!bs[i].dragging) { bs[i].vx -= imp * nx; bs[i].vy -= imp * ny; }
+              if (!bs[j].dragging) { bs[j].vx += imp * nx; bs[j].vy += imp * ny; }
+            }
+          }
+        }
+      }
+
+      // Update DOM
+      for (let i = 0; i < bs.length; i++) {
+        if (!bs[i].dragging) {
+          const el = elRefs.current[i];
+          const sp = sphereRefs.current[i];
+          if (el) el.style.transform = `translate(${bs[i].x - R}px, ${bs[i].y - R}px)`;
+          if (sp) sp.style.transform = `perspective(200px) rotateX(${bs[i].rotX}deg) rotateY(${bs[i].rotY}deg)`;
+        }
+      }
+
+      rafId.current = requestAnimationFrame(tick);
+    };
+
+    rafId.current = requestAnimationFrame(tick);
+
+    // Staggered fade-in
+    BUBBLE_LABELS.forEach((_, i) => {
+      setTimeout(() => {
+        const el = elRefs.current[i];
+        if (el) el.style.opacity = "1";
+      }, 900 + i * 130);
+    });
+
+    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
+  }, []);
+
+  const onPointerDown = (i: number) => (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const b = balls.current[i];
+    b.dragging = true;
+    b.vx = 0;
+    b.vy = 0;
+    b.dragOffsetX = (e.clientX - rect.left) - b.x;
+    b.dragOffsetY = (e.clientY - rect.top)  - b.y;
+    ptrHistory.current = [{ x: e.clientX - rect.left, y: e.clientY - rect.top, t: performance.now() }];
+    const el = elRefs.current[i];
+    if (el) { el.style.zIndex = "50"; el.style.cursor = "grabbing"; }
+  };
+
+  const onPointerMove = (i: number) => (e: React.PointerEvent<HTMLDivElement>) => {
+    const b = balls.current[i];
+    if (!b.dragging) return;
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const lx = e.clientX - rect.left;
+    const ly = e.clientY - rect.top;
+
+    // Spin from drag motion
+    const dx = lx - b.dragOffsetX - b.x;
+    const dy = ly - b.dragOffsetY - b.y;
+    b.rotX += (dy / R) * RAD_TO_DEG;
+    b.rotY -= (dx / R) * RAD_TO_DEG;
+
+    b.x = lx - b.dragOffsetX;
+    b.y = ly - b.dragOffsetY;
+    ptrHistory.current.push({ x: lx, y: ly, t: performance.now() });
+    if (ptrHistory.current.length > 6) ptrHistory.current.shift();
+
+    const el = elRefs.current[i];
+    const sp = sphereRefs.current[i];
+    if (el) el.style.transform = `translate(${b.x - R}px, ${b.y - R}px)`;
+    if (sp) sp.style.transform = `perspective(200px) rotateX(${b.rotX}deg) rotateY(${b.rotY}deg)`;
+  };
+
+  const onPointerUp = (i: number) => (_e: React.PointerEvent<HTMLDivElement>) => {
+    const b = balls.current[i];
+    if (!b.dragging) return;
+    b.dragging = false;
+
+    const pts = ptrHistory.current;
+    if (pts.length >= 2) {
+      const first = pts[0];
+      const last  = pts[pts.length - 1];
+      const dt = (last.t - first.t) / 1000;
+      if (dt > 0.01) {
+        const cap = 28;
+        b.vx = Math.max(-cap, Math.min(cap, (last.x - first.x) / dt / 60));
+        b.vy = Math.max(-cap, Math.min(cap, (last.y - first.y) / dt / 60));
+      }
+    }
+    ptrHistory.current = [];
+
+    const el = elRefs.current[i];
+    if (el) { el.style.zIndex = "20"; el.style.cursor = "grab"; }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.85, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, ease: [0.43, 0.195, 0.02, 1] }}
-      style={{ left: `${x}%`, top: `${y}%` }}
-      className="absolute hidden lg:block"
+    <div
+      ref={containerRef}
+      className="absolute inset-0 hidden lg:block"
+      style={{ zIndex: 15, pointerEvents: "none" }}
     >
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 4 + delay, repeat: Infinity, ease: "easeInOut" }}
-        className="px-3 py-1.5 rounded-full text-[11px] font-medium tracking-wide border border-[#252118] bg-[#141210]/80 backdrop-blur-sm text-[#8B8178] whitespace-nowrap"
-      >
-        {label}
-      </motion.div>
-    </motion.div>
+      {BUBBLES.map(({ label, color }, i) => (
+        <div
+          key={label}
+          ref={(el) => { elRefs.current[i] = el; }}
+          onPointerDown={onPointerDown(i)}
+          onPointerMove={onPointerMove(i)}
+          onPointerUp={onPointerUp(i)}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: R * 2,
+            height: R * 2,
+            opacity: 0,
+            transition: "opacity 0.5s ease",
+            cursor: "grab",
+            pointerEvents: "auto",
+            touchAction: "none",
+            userSelect: "none",
+            zIndex: 20,
+          }}
+        >
+          {/* 3D rotating sphere surface — color stripe rolls with ball */}
+          <div
+            ref={(el) => { sphereRefs.current[i] = el; }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              background: `
+                linear-gradient(135deg,
+                  ${color}44 0%,
+                  ${color}22 25%,
+                  transparent 45%,
+                  transparent 55%,
+                  ${color}11 75%,
+                  transparent 100%
+                ),
+                radial-gradient(circle at 58% 62%, rgba(0,0,0,0.55) 0%, transparent 60%),
+                #141210
+              `,
+              boxShadow: `inset 0 0 0 1px ${color}33, 0 6px 28px rgba(0,0,0,0.6), 0 0 20px ${color}22`,
+            }}
+          />
+
+          {/* Fixed specular highlight — stays in screen space */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              background: `
+                radial-gradient(circle at 30% 26%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 28%, transparent 50%),
+                radial-gradient(circle at 68% 72%, ${color}18 0%, transparent 40%)
+              `,
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Label — always faces camera */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                color: color,
+                textAlign: "center",
+                lineHeight: 1.2,
+                textShadow: `0 0 12px ${color}66`,
+              }}
+            >
+              {label}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
-const floatingTags = [
-  { label: "Product Strategy", delay: 0.9, x: 2, y: 22 },
-  { label: "Creative Direction", delay: 1.1, x: 74, y: 14 },
-  { label: "Brand & Identity", delay: 1.3, x: 78, y: 72 },
-  { label: "Growth & GTM", delay: 1.5, x: 1, y: 68 },
-];
+// ─────────────────────────────────────────────────────────────────────────────
 
 // Headline line — slides up one by one
 function HeadlineLine({ text, delay, italic }: { text: string; delay: number; italic?: boolean }) {
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-visible pb-2">
       <motion.span
-        initial={{ y: "100%", opacity: 0 }}
+        initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
-        className={`block font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[0.9] tracking-[-0.03em] font-bold ${
+        className={`block font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[1.05] tracking-[-0.03em] font-bold ${
           italic ? "italic text-[#5BAECC]" : "text-[#F5EFE8]"
         }`}
       >
@@ -122,10 +404,25 @@ export default function Hero() {
     >
       <HeroBackground />
 
-      {/* Floating tags */}
-      {floatingTags.map((tag) => (
-        <DisciplineTag key={tag.label} {...tag} />
-      ))}
+      {/* 8-ball physics bubbles */}
+      <FloatingBubbles />
+
+      {/* Handwriting note */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 1.8, ease: [0.43, 0.195, 0.02, 1] }}
+        className="absolute hidden lg:block pointer-events-none"
+        style={{ left: "68%", top: "60%", zIndex: 20 }}
+      >
+        <Image
+          src="/Landing Page/Handwriting Note.png"
+          alt="Handwriting note"
+          width={600}
+          height={300}
+          className="w-[340px] h-auto"
+        />
+      </motion.div>
 
       {/* Main content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20">
@@ -186,7 +483,7 @@ export default function Hero() {
           </button>
 
           <button
-            onClick={() => window.open(siteConfig.resumeUrl, "_blank")}
+            onClick={() => window.dispatchEvent(new Event("openResume"))}
             className="px-7 py-3.5 rounded-full border border-[#252118] text-[#F5EFE8]/70 text-sm font-medium tracking-wide hover:border-[#5BAECC]/50 hover:text-[#F5EFE8] hover:bg-[#141210] transition-all duration-300"
           >
             Resume ↗

@@ -11,7 +11,6 @@ export const siteConfig = {
   email: "val.chen21@gmail.com",
   linkedin: "https://www.linkedin.com/in/val-chen/",
   github: "https://github.com",
-  twitter: "https://twitter.com",
   resumeUrl: "/resume.pdf",
 };
 
@@ -49,6 +48,7 @@ export const projects = [
     accentLight: "#7ECDE6",
     number: "01",
     caseStudyUrl: "/case-studies/venmo",
+    coverImage: "/Venmo/Venmo Storefronts Cover.png",
   },
   {
     id: "dsgn100",
@@ -161,7 +161,6 @@ export const education = [
   {
     institution: "UC San Diego — Rady School of Management",
     degree: "B.S. Business Economics",
-    focus: "Double major incl. Human-Computer Interaction (Design spec.)",
     period: "Expected June 2026",
     note: "La Jolla, CA",
   },
@@ -227,8 +226,8 @@ export const about = {
   pullQuote:
     "The best products don't just solve problems — they make you feel something.",
   bio: [
-    "Hey, I'm Val — a UCSD undergraduate studying Business Economics with a double major in Human-Computer Interaction (Design). I found Product Management at the exact intersection of everything I love: people, art, and building.",
-    "Growing up, my parents' philosophy was 'try everything.' Piano, watercolor, Taekwondo — I did it all. That same curiosity carried into college, where I couldn't pick just one major. Business, Design, and CS all felt like natural extensions of who I am. Product Management was the answer that let me keep all of it.",
+    "Hey, I'm Val — a UCSD undergraduate studying Business Economics. I found Product Management at the exact intersection of everything I love: people, art, and building.",
+    "Growing up, my parents' philosophy was 'try everything.' Piano, watercolor, Taekwondo — I did it all. That same curiosity carried into college, where business and design both felt like natural extensions of who I am. Product Management was the answer that let me pursue both without choosing.",
     "My goal is to bridge creativity and strategy — bringing ideas to life while keeping the user at the center of every decision. I care about building things that are not just functional, but genuinely meaningful.",
   ],
   principles: [
@@ -249,7 +248,7 @@ export const about = {
       description: "Momentum beats perfection. I bias toward getting things into the world and improving from there.",
     },
   ],
-  interests: ["Vietnamese egg coffee", "Wong Kar Wai films", "LEGOs", "Spotify playlists", "Bucket lists", "Pokémon"],
+  interests: ["Wong Kar Wai films", "Vietnamese egg coffee", "LEGOs", "Spotify playlists", "Pokémon", "Bucket lists"],
   lookingFor:
     "PM, APM, or growth/strategy roles at product-driven companies — ideally somewhere that values both analytical rigor and design taste. Open to full-time and internship opportunities.",
 };

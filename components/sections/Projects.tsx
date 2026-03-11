@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { projects } from "@/data/content";
 
 // Section header
@@ -36,6 +38,7 @@ interface Project {
   accentLight: string;
   number: string;
   caseStudyUrl?: string;
+  coverImage?: string;
 }
 
 function ProjectCard({
@@ -52,6 +55,15 @@ function ProjectCard({
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const isEven = index % 2 === 0;
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (project.caseStudyUrl) {
+      router.push(project.caseStudyUrl);
+    } else {
+      onToggle();
+    }
+  };
 
   return (
     <motion.div
@@ -63,7 +75,7 @@ function ProjectCard({
     >
       <motion.div
         layout
-        onClick={onToggle}
+        onClick={handleClick}
         className={`relative overflow-hidden rounded-2xl border border-[#252118] cursor-pointer transition-all duration-500 ${
           isExpanded ? "border-[#3a3020]" : "hover:border-[#2e2820]"
         }`}
@@ -148,40 +160,45 @@ function ProjectCard({
 
             {/* Right: Visual panel */}
             <div className="hidden md:flex flex-col w-[220px] lg:w-[280px] shrink-0">
-              {/* Abstract visual */}
+              {/* Cover image or abstract placeholder */}
               <div
                 className="relative h-36 lg:h-44 rounded-xl overflow-hidden border border-[#252118]"
                 style={{ background: `linear-gradient(135deg, #0A0908 0%, #141210 100%)` }}
               >
-                {/* Decorative grid inside card */}
-                <div className="absolute inset-0 dot-grid opacity-50" />
-
-                {/* Accent shapes */}
-                <motion.div
-                  animate={isExpanded ? { scale: [1, 1.2, 1], opacity: [0.6, 0.9, 0.6] } : { scale: 1, opacity: 0.6 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${project.accentColor}30 0%, transparent 70%)`,
-                    filter: "blur(12px)",
-                  }}
-                />
-                <div
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <span
-                    className="font-display text-7xl font-bold leading-none opacity-[0.07]"
-                    style={{ color: project.accentColor }}
-                  >
-                    {project.title.charAt(0)}
-                  </span>
-                </div>
-
-                {/* Corner accent */}
-                <div
-                  className="absolute top-3 right-3 w-6 h-6 rounded-full opacity-60"
-                  style={{ background: project.accentColor }}
-                />
+                {project.coverImage ? (
+                  <Image
+                    src={project.coverImage}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="280px"
+                  />
+                ) : (
+                  <>
+                    <div className="absolute inset-0 dot-grid opacity-50" />
+                    <motion.div
+                      animate={isExpanded ? { scale: [1, 1.2, 1], opacity: [0.6, 0.9, 0.6] } : { scale: 1, opacity: 0.6 }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full"
+                      style={{
+                        background: `radial-gradient(circle, ${project.accentColor}30 0%, transparent 70%)`,
+                        filter: "blur(12px)",
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span
+                        className="font-display text-7xl font-bold leading-none opacity-[0.07]"
+                        style={{ color: project.accentColor }}
+                      >
+                        {project.title.charAt(0)}
+                      </span>
+                    </div>
+                    <div
+                      className="absolute top-3 right-3 w-6 h-6 rounded-full opacity-60"
+                      style={{ background: project.accentColor }}
+                    />
+                  </>
+                )}
               </div>
 
               {/* Expand hint */}
@@ -189,12 +206,16 @@ function ProjectCard({
                 animate={{ opacity: isExpanded ? 0 : 1 }}
                 className="mt-4 flex items-center gap-2 justify-end"
               >
-                <span className="text-[11px] text-[#4A4540] font-medium">View case study</span>
+                <span className="text-[11px] text-[#4A4540] font-medium">
+                  {project.caseStudyUrl ? "View case study" : "Expand"}
+                </span>
                 <div
                   className="w-6 h-6 rounded-full border border-[#252118] flex items-center justify-center"
                   style={{ borderColor: `${project.accentColor}30` }}
                 >
-                  <span style={{ color: project.accentColor }} className="text-[10px]">↗</span>
+                  <span style={{ color: project.accentColor }} className="text-[10px]">
+                    {project.caseStudyUrl ? "↗" : "+"}
+                  </span>
                 </div>
               </motion.div>
             </div>
@@ -358,7 +379,7 @@ export default function Projects() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-12 text-center text-[11px] tracking-[0.15em] uppercase text-[#4A4540]"
         >
-          Click any project to expand the case study
+          Click to open case study · expand others for details
         </motion.p>
       </div>
     </section>
