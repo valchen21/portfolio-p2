@@ -185,7 +185,6 @@ export const skills = {
     "A/B Testing",
     "Customer Analytics",
     "Agile / Kanban",
-    "SDLC",
   ],
   "Design & UX": [
     "Figma",
@@ -202,20 +201,16 @@ export const skills = {
     "Paid Social",
     "Short-form Content",
     "Campaign Planning",
-    "SEO / SEM",
     "Community Growth",
     "Copywriting",
   ],
   "Tools & Tech": [
-    "Jira",
     "Notion",
     "Google Suite",
     "Power BI",
     "Python",
     "R",
     "Stata",
-    "Confluence",
-    "Smartsheet",
     "Figma",
   ],
 };

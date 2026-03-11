@@ -344,14 +344,14 @@ export default function Projects() {
             initial={{ opacity: 0, y: 24 }}
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
+            className="mt-6"
           >
             <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-[#F5EFE8] leading-tight tracking-tight">
               Projects &<br />
               <span className="italic text-[#5BAECC]">Case Studies</span>
             </h2>
 
-            <p className="max-w-sm text-[#8B8178] text-sm leading-relaxed md:text-right">
+            <p className="mt-4 text-[#8B8178] text-sm leading-relaxed">
               Some of my best work...
             </p>
           </motion.div>

@@ -263,8 +263,7 @@ export default function About() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-6 font-display text-5xl md:text-6xl lg:text-7xl font-bold text-[#F5EFE8] leading-tight tracking-tight"
           >
-            A little<br />
-            <span className="italic text-[#5BAECC]">about me</span>
+            Beyond <span className="italic text-[#5BAECC]">the screen</span>
           </motion.h2>
         </div>
 

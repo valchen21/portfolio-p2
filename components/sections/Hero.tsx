@@ -117,7 +117,7 @@ function FloatingBubbles() {
       { x: W * 0.80, y: H * 0.48 },
       { x: W * 0.87, y: H * 0.78 },
       { x: W * 0.10, y: H * 0.75 },
-      { x: W * 0.54, y: H * 0.60 },
+      { x: W * 0.12, y: H * 0.40 },
     ];
 
     balls.current = seeds.map(({ x, y }) => ({
@@ -392,7 +392,7 @@ function RotatingPhrase({ delay }: { delay: number }) {
   const smallText = "font-display text-[8vw] sm:text-[6.5vw] md:text-[5.5vw] lg:text-[4.5vw] xl:text-[4vw] leading-[1.1] tracking-[-0.03em] font-bold";
 
   return (
-    <div className="pb-2">
+    <div className="pb-2" style={{ overflow: "hidden" }}>
       <motion.div
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -401,7 +401,7 @@ function RotatingPhrase({ delay }: { delay: number }) {
         <span className={`${smallText} text-[#F5EFE8] block`}>
           Building things
         </span>
-        <div style={{ overflow: "hidden" }}>
+        <div style={{ overflow: "hidden", width: "100%" }}>
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={index}
@@ -412,7 +412,7 @@ function RotatingPhrase({ delay }: { delay: number }) {
                 y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
                 opacity: { duration: 0.1, ease: "easeIn" },
               }}
-              style={{ display: "block", color: PHRASES[index].color, whiteSpace: "nowrap" }}
+              style={{ display: "block", color: PHRASES[index].color, whiteSpace: "nowrap", overflow: "hidden", width: "100%" }}
               className={`${smallText} italic`}
             >
               {PHRASES[index].text}
