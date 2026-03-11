@@ -1,0 +1,268 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { about, siteConfig, marqueeItems } from "@/data/content";
+
+function SectionLabel({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="text-[11px] font-medium tracking-[0.25em] uppercase text-[#4A4540]">{number}</span>
+      <div className="w-8 h-px bg-[#252118]" />
+      <span className="text-[11px] font-medium tracking-[0.25em] uppercase text-[#4A4540]">{label}</span>
+    </div>
+  );
+}
+
+// Marquee strip
+function MarqueeStrip({ reverse = false }: { reverse?: boolean }) {
+  const items = [...marqueeItems, ...marqueeItems];
+  return (
+    <div className="flex overflow-hidden py-4">
+      <motion.div
+        animate={{ x: reverse ? ["0%", "50%"] : ["0%", "-50%"] }}
+        transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+        className="flex gap-6 shrink-0"
+      >
+        {items.map((item, i) => (
+          <div key={`${item}-${i}`} className="flex items-center gap-6 shrink-0">
+            <span className="text-sm font-medium text-[#4A4540] whitespace-nowrap">{item}</span>
+            <span className="text-[#5BAECC]/40 text-lg leading-none">✦</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+function PrincipleCard({
+  principle,
+  index,
+}: {
+  principle: (typeof about.principles)[0];
+  index: number;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group p-5 rounded-xl border border-[#252118] bg-[#141210]/40 hover:bg-[#141210]/80 hover:border-[#2e2820] transition-all duration-300"
+    >
+      <div className="flex items-start gap-3">
+        <span
+          className="font-display text-2xl font-bold text-[#5BAECC]/20 leading-none mt-0.5 select-none group-hover:text-[#5BAECC]/30 transition-colors duration-300"
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <div>
+          <h4 className="text-sm font-semibold text-[#F5EFE8] mb-1.5">{principle.label}</h4>
+          <p className="text-sm text-[#8B8178] leading-relaxed">{principle.description}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function About() {
+  const headerRef = useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
+
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const quoteY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  return (
+    <section id="about" ref={sectionRef} className="relative py-32 md:py-40">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[#0A0908]" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse at 80% 30%, rgba(91,174,204,0.05) 0%, transparent 55%)",
+        }}
+      />
+      <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#252118] to-transparent" />
+
+      {/* Marquee strip — top */}
+      <div className="relative z-10 overflow-hidden border-y border-[#252118] bg-[#0d0b0a] mb-20 md:mb-28">
+        <MarqueeStrip />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <div ref={headerRef} className="mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel number="04" label="About" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="mt-6 font-display text-5xl md:text-6xl lg:text-7xl font-bold text-[#F5EFE8] leading-tight tracking-tight"
+          >
+            A little<br />
+            <span className="italic text-[#5BAECC]">about me</span>
+          </motion.h2>
+        </div>
+
+        {/* Main two-column layout */}
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 mb-24">
+          {/* Left: Pull quote + bio */}
+          <div>
+            {/* Pull quote */}
+            <motion.div
+              style={{ y: quoteY }}
+              className="mb-10"
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: [0.43, 0.195, 0.02, 1] }}
+                className="relative"
+              >
+                {/* Quote mark */}
+                <span className="absolute -top-4 -left-2 font-display text-7xl leading-none text-[#5BAECC]/10 select-none">
+                  &ldquo;
+                </span>
+                <p className="font-display text-xl md:text-2xl font-medium text-[#F5EFE8] leading-snug pl-4 border-l-2 border-[#5BAECC]/40">
+                  {about.pullQuote}
+                </p>
+              </motion.div>
+            </motion.div>
+
+            {/* Bio paragraphs */}
+            <div className="space-y-5">
+              {about.bio.map((paragraph, i) => (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.12 }}
+                  className="text-base text-[#8B8178] leading-relaxed"
+                >
+                  {paragraph}
+                </motion.p>
+              ))}
+            </div>
+
+            {/* Interests */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-8 p-5 rounded-xl border border-[#252118] bg-[#141210]/40"
+            >
+              <h4 className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#4A4540] mb-3">
+                Outside work
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {about.interests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178]"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right: Principles */}
+          <div>
+            <motion.h3
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#4A4540] mb-6"
+            >
+              How I think
+            </motion.h3>
+
+            <div className="space-y-3">
+              {about.principles.map((p, i) => (
+                <PrincipleCard key={p.label} principle={p} index={i} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Looking for section */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="relative overflow-hidden rounded-2xl border border-[#252118] p-8 md:p-12"
+          style={{
+            background: "linear-gradient(135deg, #141210 0%, #1a1612 50%, #141210 100%)",
+          }}
+        >
+          {/* Ambient glow */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse at 70% 50%, rgba(91,174,204,0.08) 0%, transparent 60%)",
+            }}
+          />
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full bg-[#4A8B6A]"
+                />
+                <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-[#4A8B6A]">
+                  Open to opportunities
+                </span>
+              </div>
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-[#F5EFE8] mb-3 leading-snug">
+                What I&apos;m looking for
+              </h3>
+              <p className="text-[#8B8178] text-sm leading-relaxed max-w-lg">
+                {about.lookingFor}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 shrink-0">
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#5BAECC] text-[#0A0908] text-sm font-semibold hover:bg-[#7ECDE6] transition-all duration-300 hover:shadow-[0_0_30px_rgba(91,174,204,0.3)]"
+              >
+                <span>Get in touch</span>
+                <span className="group-hover:translate-x-0.5 transition-transform duration-200">→</span>
+              </a>
+              <a
+                href={siteConfig.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#252118] text-[#F5EFE8]/60 text-sm font-medium hover:border-[#3a3020] hover:text-[#F5EFE8] transition-all duration-300 justify-center"
+              >
+                LinkedIn ↗
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
