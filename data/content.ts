@@ -67,6 +67,7 @@ export const projects = [
     accentColor: "#C4A55A",
     accentLight: "#D9BF7A",
     number: "02",
+    caseStudyUrl: "/case-studies/dsgn100",
   },
   {
     id: "akpsi",
