@@ -344,16 +344,15 @@ function FloatingBubbles() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PHRASES = [
-  "love.",
-  "use.",
-  "share.",
-  "obsess over.",
-  "come back to.",
-  "talk about.",
-  "build with.",
-  "remember.",
-  "can't ignore.",
-  "care about.",
+  { text: "people love deeply.",          color: "#FF4D6D" },
+  { text: "people use happily.",          color: "#FFD166" },
+  { text: "people share with each other.", color: "#2ECC71" },
+  { text: "people obsess over.",          color: "#8A5CF6" },
+  { text: "people come back to.",         color: "#3A86FF" },
+  { text: "people talk about.",           color: "#FF8C42" },
+  { text: "people remember.",             color: "#4F46E5" },
+  { text: "people can't ignore.",         color: "#FF006E" },
+  { text: "people care about.",           color: "#14B8A6" },
 ];
 
 // Headline line — slides up one by one
@@ -401,13 +400,9 @@ function RotatingPhrase({ delay }: { delay: number }) {
         style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}
       >
         <span className={`${smallText} text-[#F5EFE8]`}>
-          Building things people&nbsp;
+          Building things&nbsp;
         </span>
-        {/* Fixed-width container prevents layout shift when phrase length changes */}
-        <div
-          className={`${smallText} lg:min-w-[33vw] xl:min-w-[30vw]`}
-          style={{ overflow: "hidden" }}
-        >
+        <div className={smallText} style={{ overflow: "hidden" }}>
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={index}
@@ -418,10 +413,10 @@ function RotatingPhrase({ delay }: { delay: number }) {
                 y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
                 opacity: { duration: 0.1, ease: "easeIn" },
               }}
-              style={{ display: "block", color: "#5BAECC", whiteSpace: "nowrap" }}
+              style={{ display: "block", color: PHRASES[index].color, whiteSpace: "nowrap" }}
               className="italic"
             >
-              {PHRASES[index]}
+              {PHRASES[index].text}
             </motion.span>
           </AnimatePresence>
         </div>
