@@ -5,7 +5,7 @@ export const siteConfig = {
   name: "Val Chen",
   nameShort: "VC",
   role: "Product · Design · Strategy",
-  headline: "Building things\npeople love.",
+  headline: "Val Chen",
   subheadline:
     "UCSD Business Economics student and aspiring PM at the intersection of design, marketing, and creative strategy. I work best where curiosity meets execution.",
   email: "val.chen21@gmail.com",

@@ -377,16 +377,16 @@ function FloatingBubbles() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PHRASES = [
-  { text: "people love.",         color: "#5BAECC" }, // teal
-  { text: "people use.",          color: "#D4874A" }, // amber
-  { text: "people share.",        color: "#9B7FD4" }, // violet
-  { text: "people obsess over.",  color: "#CC5B7A" }, // rose
-  { text: "people come back to.", color: "#4AB8A0" }, // mint
-  { text: "people talk about.",   color: "#C4A44A" }, // gold
-  { text: "people build with.",   color: "#7EC86A" }, // green
-  { text: "people remember.",     color: "#CC8B5B" }, // warm orange
-  { text: "people can't ignore.", color: "#6A8BCC" }, // blue
-  { text: "people care about.",   color: "#B45BCC" }, // purple
+  "love.",
+  "use.",
+  "share.",
+  "obsess over.",
+  "come back to.",
+  "talk about.",
+  "build with.",
+  "remember.",
+  "can't ignore.",
+  "care about.",
 ];
 
 // Headline line — slides up one by one
@@ -407,7 +407,7 @@ function HeadlineLine({ text, delay, italic }: { text: string; delay: number; it
   );
 }
 
-// Rotating second line — slot machine roll downward
+// Second line — "Building things [rotating]" at smaller size
 function RotatingPhrase({ delay }: { delay: number }) {
   const [index, setIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -423,33 +423,34 @@ function RotatingPhrase({ delay }: { delay: number }) {
     return () => clearInterval(id);
   }, [animating]);
 
-  const current = PHRASES[index];
+  const smallText = "font-display text-[8vw] sm:text-[6.5vw] md:text-[5.5vw] lg:text-[4.5vw] xl:text-[4vw] leading-[1.1] tracking-[-0.03em] font-bold";
 
   return (
-    <div className="pb-2">
+    <div className="pb-2 overflow-hidden">
       <motion.div
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
-        style={{ overflow: "hidden" }}
+        style={{ display: "flex", alignItems: "baseline" }}
       >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={index}
-            initial={animating ? { y: "-105%" } : false}
-            animate={{ y: "0%" }}
-            exit={{ y: "105%" }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              display: "block",
-              color: current.color,
-              whiteSpace: "nowrap",
-            }}
-            className="font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[1.05] tracking-[-0.03em] font-bold italic"
-          >
-            {current.text}
-          </motion.span>
-        </AnimatePresence>
+        <span className={`${smallText} text-[#F5EFE8]`}>
+          Building things&nbsp;
+        </span>
+        <div style={{ overflow: "hidden" }}>
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={index}
+              initial={animating ? { y: "-105%" } : false}
+              animate={{ y: "0%" }}
+              exit={{ y: "105%" }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: "block", color: "#5BAECC", whiteSpace: "nowrap" }}
+              className={`${smallText} italic`}
+            >
+              {PHRASES[index]}
+            </motion.span>
+          </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   );
