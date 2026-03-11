@@ -392,17 +392,16 @@ function RotatingPhrase({ delay }: { delay: number }) {
   const smallText = "font-display text-[8vw] sm:text-[6.5vw] md:text-[5.5vw] lg:text-[4.5vw] xl:text-[4vw] leading-[1.1] tracking-[-0.03em] font-bold";
 
   return (
-    <div className="pb-2 overflow-hidden">
+    <div className="pb-2">
       <motion.div
         initial={{ y: "110%", opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
-        style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}
       >
-        <span className={`${smallText} text-[#F5EFE8]`}>
-          Building things&nbsp;
+        <span className={`${smallText} text-[#F5EFE8] block`}>
+          Building things
         </span>
-        <div className={smallText} style={{ overflow: "hidden" }}>
+        <div style={{ overflow: "hidden" }}>
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={index}
@@ -414,7 +413,7 @@ function RotatingPhrase({ delay }: { delay: number }) {
                 opacity: { duration: 0.1, ease: "easeIn" },
               }}
               style={{ display: "block", color: PHRASES[index].color, whiteSpace: "nowrap" }}
-              className="italic"
+              className={`${smallText} italic`}
             >
               {PHRASES[index].text}
             </motion.span>
