@@ -440,7 +440,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+      className="relative min-h-screen overflow-hidden"
     >
       <HeroBackground />
 
@@ -465,7 +465,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Main content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-24">
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
