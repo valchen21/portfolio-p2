@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Alex Carter — Product · Design · Strategy",
+  title: "Val Chen - Portfolio",
   description:
     "Builder at the intersection of product thinking, creative direction, and go-to-market strategy.",
+  icons: {
+    icon: "/VC Logo.png",
+  },
   openGraph: {
-    title: "Alex Carter — Portfolio",
+    title: "Val Chen - Portfolio",
     description: "Product · Design · Strategy",
     type: "website",
   },
