@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 // ─── TOC config ───────────────────────────────────────────────────────────────
 const TOC_ITEMS = [
@@ -190,6 +191,23 @@ export default function DSGN100CaseStudy() {
                   <p className="text-sm font-medium text-[#F5EFE8]">{m.value}</p>
                 </div>
               ))}
+            </motion.div>
+
+            {/* Cover image */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-12 rounded-2xl overflow-hidden border border-[#1E1B17]"
+            >
+              <Image
+                src="/Pantry Pal/Pantry Pal Cover.PNG"
+                alt="PantryPal Cover"
+                width={1200}
+                height={600}
+                className="w-full h-auto object-cover"
+                priority
+              />
             </motion.div>
           </div>
         </div>
@@ -555,6 +573,24 @@ export default function DSGN100CaseStudy() {
                     </div>
                   ))}
                 </div>
+
+                {/* Hi-fi screen gallery */}
+                <FadeIn delay={0.1}>
+                  <p className="text-[10px] uppercase tracking-widest text-[#5C5650] mt-10 mb-4">High-Fidelity Screens</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[1, 2, 3, 4, 5, 6].map((n) => (
+                      <div key={n} className="rounded-xl overflow-hidden border border-[#1E1B17] bg-[#0F0E0D]">
+                        <Image
+                          src={`/Pantry Pal/PP ${n}.PNG`}
+                          alt={`PantryPal screen ${n}`}
+                          width={600}
+                          height={800}
+                          className="w-full h-auto object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </FadeIn>
               </FadeIn>
             </Section>
 
