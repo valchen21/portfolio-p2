@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { about, siteConfig, marqueeItems } from "@/data/content";
 
@@ -53,11 +53,24 @@ function HobbyTag({ label }: { label: string }) {
   const [sprites, setSprites] = useState<{ name: string; url: string }[]>([]);
   const details = HOBBY_DETAILS[label];
   const hasFetched = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch Pokémon sprites on first hover
-  const handleMouseEnter = () => {
-    setOpen(true);
-    if (details?.pokemon && !hasFetched.current) {
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const handleClick = () => {
+    const next = !open;
+    setOpen(next);
+    if (next && details?.pokemon && !hasFetched.current) {
       hasFetched.current = true;
       Promise.all(
         details.pokemon.map((name) =>
@@ -80,50 +93,56 @@ function HobbyTag({ label }: { label: string }) {
   }
 
   return (
-    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={() => setOpen(false)}>
-      <button className={`px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178] cursor-default ${glowClass}`}>
+    <div ref={containerRef} className="relative">
+      <button
+        onClick={handleClick}
+        className={`px-3 py-1.5 rounded-full text-xs font-medium border bg-[#0A0908] transition-all duration-200 cursor-pointer ${
+          open
+            ? "border-[#5BAECC]/60 text-[#F5EFE8] shadow-[0_0_12px_rgba(91,174,204,0.25)]"
+            : `border-[#252118] text-[#8B8178] ${glowClass}`
+        }`}
+      >
         {label}
       </button>
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 6, scale: 0.97 }}
-            transition={{ duration: 0.18 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-56 z-50"
+            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ duration: 0.2 }}
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-52 z-50"
           >
-            <div className="rounded-xl border border-[#252118] bg-[#141210] overflow-hidden shadow-xl shadow-black/50">
-              {/* Photo */}
+            <div className="rounded-xl border border-[#252118] bg-[#141210] overflow-hidden shadow-xl shadow-black/60">
+              {/* 1:1 photo */}
               {details.image && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={details.image} alt={label} className="w-full h-28 object-cover" />
+                <img src={details.image} alt={label} className="w-full aspect-square object-cover" />
               )}
-              <div className="p-3.5">
               {/* Pokémon sprites */}
               {details.pokemon && (
-                <div className="flex gap-1 mb-2.5 justify-center">
+                <div className="flex gap-2 pt-3 px-3.5 justify-center">
                   {sprites.length > 0
                     ? sprites.map((s) => (
-                        <img key={s.name} src={s.url} alt={s.name} width={56} height={56} className="pixelated" style={{ imageRendering: "pixelated" }} />
+                        <img key={s.name} src={s.url} alt={s.name} width={96} height={96} style={{ imageRendering: "pixelated" }} />
                       ))
                     : details.pokemon.map((name) => (
-                        <div key={name} className="w-14 h-14 rounded-lg bg-[#0A0908] border border-[#252118] animate-pulse" />
+                        <div key={name} className="w-24 h-24 rounded-lg bg-[#0A0908] border border-[#252118] animate-pulse" />
                       ))}
                 </div>
               )}
-              <p className="text-xs text-[#8B8178] leading-relaxed mb-2.5">{details.desc}</p>
-              {details.href && details.linkLabel && (
-                <a
-                  href={details.href}
-                  target={details.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel="noopener noreferrer"
-                  className="text-[11px] font-medium text-[#5BAECC] hover:text-[#7ECDE6] transition-colors duration-150"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {details.linkLabel}
-                </a>
-              )}
+              <div className="p-3.5">
+                <p className="text-xs text-[#8B8178] leading-relaxed mb-2.5">{details.desc}</p>
+                {details.href && details.linkLabel && (
+                  <a
+                    href={details.href}
+                    target={details.href.startsWith("mailto") ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    className="text-[11px] font-medium text-[#5BAECC] hover:text-[#7ECDE6] transition-colors duration-150"
+                  >
+                    {details.linkLabel}
+                  </a>
+                )}
               </div>
               {/* Arrow */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#252118]" />
