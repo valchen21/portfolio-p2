@@ -352,8 +352,7 @@ export default function Projects() {
             </h2>
 
             <p className="max-w-sm text-[#8B8178] text-sm leading-relaxed md:text-right">
-              A selection of product, brand, and growth work across B2B SaaS,
-              consumer apps, and creative campaigns.
+              Some of my best work...
             </p>
           </motion.div>
         </div>
