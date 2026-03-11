@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 // ─── TOC config ───────────────────────────────────────────────────────────────
@@ -162,12 +163,23 @@ export default function VenmoCaseStudy() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
                 <StatCard stat="40"  label="User surveys"                           delay={0.1} />
                 <StatCard stat="15"  label="User interviews"                        delay={0.2} />
                 <StatCard stat="$450M" label="Serviceable obtainable market"        delay={0.3} />
                 <StatCard stat="3"   label="Core pain points solved"                delay={0.4} />
               </div>
+              <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}
+                className="rounded-2xl overflow-hidden border border-[#252118]">
+                <Image
+                  src="/Venmo Storefronts Cover.png"
+                  alt="Venmo Storefronts Cover"
+                  width={1200}
+                  height={675}
+                  className="w-full h-auto"
+                  priority
+                />
+              </motion.div>
             </motion.div>
           </Section>
 

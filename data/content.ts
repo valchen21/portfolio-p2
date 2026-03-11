@@ -34,7 +34,7 @@ export const projects = [
   {
     id: "product-space",
     index: "01",
-    title: "Product Space",
+    title: "Venmo Storefront Case Study",
     category: "Product · PM Fellowship",
     role: "Product Manager Fellow",
     summary:
@@ -249,7 +249,7 @@ export const about = {
       description: "Momentum beats perfection. I bias toward getting things into the world and improving from there.",
     },
   ],
-  interests: ["Wong Kar Wai films", "Film photography", "Spotify playlists", "Vietnamese egg coffee", "LEGOs", "Bucket lists"],
+  interests: ["Vietnamese egg coffee", "Wong Kar Wai films", "LEGOs", "Spotify playlists", "Bucket lists", "Pokémon"],
   lookingFor:
     "PM, APM, or growth/strategy roles at product-driven companies — ideally somewhere that values both analytical rigor and design taste. Open to full-time and internship opportunities.",
 };

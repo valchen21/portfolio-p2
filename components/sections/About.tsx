@@ -1,8 +1,139 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { about, siteConfig, marqueeItems } from "@/data/content";
+
+// ─── Hobby popup data ─────────────────────────────────────────────────────────
+type HobbyDetail = {
+  desc: string;
+  linkLabel?: string;
+  href?: string;
+  pokemon?: string[];
+  image?: string;
+};
+
+const HOBBY_DETAILS: Record<string, HobbyDetail> = {
+  "Vietnamese egg coffee": {
+    desc: "THE best coffee and it always gets me going — still trying to figure out how to make it at home.",
+    linkLabel: "See the recipe →",
+    href: "https://www.hummingbirdhigh.com/2022/05/vietnamese-egg-coffee.html",
+    image: "/Landing Page/Egg Coffee.jpg",
+  },
+  "Wong Kar Wai films": {
+    desc: "My favorite director from when my dad made me watch his films as a kid. Fell in love with the cinematography — it felt like looking at art.",
+    linkLabel: "Watch this →",
+    href: "https://www.youtube.com/watch?v=XNdalPtWBVw",
+    image: "/Landing Page/Wong Kar Wai Pop Up.jpg",
+  },
+  "LEGOs": {
+    desc: "I must have the Notre Dame set from Lego Architecture. Can't wait to fill my future home with these sets.",
+    linkLabel: "The set →",
+    href: "https://brickarchitect.com/2024/review-21061-notre-dame-lego-architecture/",
+    image: "/Landing Page/Lego Set.png",
+  },
+  "Spotify playlists": {
+    desc: "I love music, discovering new artists, and connecting with people through playlists. Check out what I've been listening to.",
+    linkLabel: "My Spotify →",
+    href: "https://open.spotify.com/user/blackheartzx?si=ed50f63291124c79",
+  },
+  "Bucket lists": {
+    desc: "Always down for new things. I'm a firm believer in setting goals that drive purpose — if you have an idea, send it my way.",
+    linkLabel: "Send me one →",
+    href: "mailto:val.chen21@gmail.com",
+  },
+  "Pokémon": {
+    desc: "Grew up playing it and have even caught them all in my time. My personal favorites are Piplup and Jirachi.",
+    pokemon: ["piplup", "jirachi"],
+  },
+};
+
+function HobbyTag({ label }: { label: string }) {
+  const [open, setOpen] = useState(false);
+  const [sprites, setSprites] = useState<{ name: string; url: string }[]>([]);
+  const details = HOBBY_DETAILS[label];
+  const hasFetched = useRef(false);
+
+  // Fetch Pokémon sprites on first hover
+  const handleMouseEnter = () => {
+    setOpen(true);
+    if (details?.pokemon && !hasFetched.current) {
+      hasFetched.current = true;
+      Promise.all(
+        details.pokemon.map((name) =>
+          fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+            .then((r) => r.json())
+            .then((d) => ({ name, url: d.sprites.front_default as string }))
+        )
+      ).then(setSprites);
+    }
+  };
+
+  const glowClass = "hover:border-[#5BAECC]/50 hover:text-[#F5EFE8] hover:shadow-[0_0_12px_rgba(91,174,204,0.25)] transition-all duration-200";
+
+  if (!details) {
+    return (
+      <span className={`px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178] ${glowClass}`}>
+        {label}
+      </span>
+    );
+  }
+
+  return (
+    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={() => setOpen(false)}>
+      <button className={`px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178] cursor-default ${glowClass}`}>
+        {label}
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            transition={{ duration: 0.18 }}
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-56 z-50"
+          >
+            <div className="rounded-xl border border-[#252118] bg-[#141210] overflow-hidden shadow-xl shadow-black/50">
+              {/* Photo */}
+              {details.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={details.image} alt={label} className="w-full h-28 object-cover" />
+              )}
+              <div className="p-3.5">
+              {/* Pokémon sprites */}
+              {details.pokemon && (
+                <div className="flex gap-1 mb-2.5 justify-center">
+                  {sprites.length > 0
+                    ? sprites.map((s) => (
+                        <img key={s.name} src={s.url} alt={s.name} width={56} height={56} className="pixelated" style={{ imageRendering: "pixelated" }} />
+                      ))
+                    : details.pokemon.map((name) => (
+                        <div key={name} className="w-14 h-14 rounded-lg bg-[#0A0908] border border-[#252118] animate-pulse" />
+                      ))}
+                </div>
+              )}
+              <p className="text-xs text-[#8B8178] leading-relaxed mb-2.5">{details.desc}</p>
+              {details.href && details.linkLabel && (
+                <a
+                  href={details.href}
+                  target={details.href.startsWith("mailto") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  className="text-[11px] font-medium text-[#5BAECC] hover:text-[#7ECDE6] transition-colors duration-150"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {details.linkLabel}
+                </a>
+              )}
+              </div>
+              {/* Arrow */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#252118]" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function SectionLabel({ number, label }: { number: string; label: string }) {
   return (
@@ -173,12 +304,7 @@ export default function About() {
               </h4>
               <div className="flex flex-wrap gap-2">
                 {about.interests.map((interest) => (
-                  <span
-                    key={interest}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178]"
-                  >
-                    {interest}
-                  </span>
+                  <HobbyTag key={interest} label={interest} />
                 ))}
               </div>
             </motion.div>
