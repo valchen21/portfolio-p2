@@ -117,7 +117,7 @@ function FloatingBubbles() {
       { x: W * 0.80, y: H * 0.48 },
       { x: W * 0.87, y: H * 0.78 },
       { x: W * 0.10, y: H * 0.75 },
-      { x: W * 0.54, y: H * 0.88 },
+      { x: W * 0.54, y: H * 0.60 },
     ];
 
     balls.current = seeds.map(({ x, y }) => ({
