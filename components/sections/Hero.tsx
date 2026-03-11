@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { siteConfig, disciplines } from "@/data/content";
 
@@ -376,6 +376,19 @@ function FloatingBubbles() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+const PHRASES = [
+  "people love.",
+  "people use.",
+  "people share.",
+  "people obsess over.",
+  "people come back to.",
+  "people talk about.",
+  "people build with.",
+  "people remember.",
+  "people can't ignore.",
+  "people care about.",
+];
+
 // Headline line — slides up one by one
 function HeadlineLine({ text, delay, italic }: { text: string; delay: number; italic?: boolean }) {
   return (
@@ -390,6 +403,51 @@ function HeadlineLine({ text, delay, italic }: { text: string; delay: number; it
       >
         {text}
       </motion.span>
+    </div>
+  );
+}
+
+// Rotating second line — 3D drum roll downward
+function RotatingPhrase({ delay }: { delay: number }) {
+  const [index, setIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+
+  useEffect(() => {
+    const startTimer = setTimeout(() => {
+      setAnimating(true);
+    }, (delay + 1.5) * 1000);
+    return () => clearTimeout(startTimer);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!animating) return;
+    const interval = setInterval(() => {
+      setIndex((i) => (i + 1) % PHRASES.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [animating]);
+
+  return (
+    <div className="overflow-visible pb-2" style={{ perspective: "600px" }}>
+      <motion.div
+        initial={{ y: "110%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.9, delay, ease: [0.43, 0.195, 0.02, 1] }}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={index}
+            initial={animating ? { rotateX: -90, opacity: 0 } : false}
+            animate={{ rotateX: 0, opacity: 1 }}
+            exit={{ rotateX: 90, opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            style={{ display: "block", transformOrigin: "50% 50%" }}
+            className="font-display text-[13vw] sm:text-[10vw] md:text-[9vw] lg:text-[7.5vw] xl:text-[6.5vw] leading-[1.05] tracking-[-0.03em] font-bold italic text-[#5BAECC]"
+          >
+            {PHRASES[index]}
+          </motion.span>
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
@@ -441,14 +499,8 @@ export default function Hero() {
 
         {/* Headline */}
         <div className="mb-10">
-          {lines.map((line, i) => (
-            <HeadlineLine
-              key={i}
-              text={line}
-              delay={0.35 + i * 0.15}
-              italic={i === 1}
-            />
-          ))}
+          <HeadlineLine text={lines[0]} delay={0.35} />
+          <RotatingPhrase delay={0.50} />
         </div>
 
         {/* Sub-headline */}
