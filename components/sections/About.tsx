@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { about, siteConfig, marqueeItems } from "@/data/content";
 
 // ─── Hobby popup data ─────────────────────────────────────────────────────────
@@ -10,6 +11,7 @@ type HobbyDetail = {
   linkLabel?: string;
   href?: string;
   pokemon?: string[];
+  pokemonLinks?: { name: string; href: string }[];
   image?: string;
 };
 
@@ -45,6 +47,10 @@ const HOBBY_DETAILS: Record<string, HobbyDetail> = {
   "Pokémon": {
     desc: "Grew up playing it and have even caught them all in my time. My personal favorites are Piplup and Jirachi.",
     pokemon: ["piplup", "jirachi"],
+    pokemonLinks: [
+      { name: "piplup", href: "https://www.pokemon.com/us/pokedex/piplup" },
+      { name: "jirachi", href: "https://www.pokemon.com/us/pokedex/jirachi" },
+    ],
   },
 };
 
@@ -82,11 +88,9 @@ function HobbyTag({ label }: { label: string }) {
     }
   };
 
-  const glowClass = "hover:border-[#5BAECC]/50 hover:text-[#F5EFE8] hover:shadow-[0_0_12px_rgba(91,174,204,0.25)] transition-all duration-200";
-
   if (!details) {
     return (
-      <span className={`px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178] ${glowClass}`}>
+      <span className="hobby-tag px-3 py-1.5 rounded-full text-xs font-medium border border-[#252118] bg-[#0A0908] text-[#8B8178] transition-all duration-200">
         {label}
       </span>
     );
@@ -96,10 +100,10 @@ function HobbyTag({ label }: { label: string }) {
     <div ref={containerRef} className="relative inline-block">
       <button
         onClick={handleClick}
-        className={`px-3 py-1.5 rounded-full text-xs font-medium border bg-[#0A0908] transition-all duration-200 cursor-pointer ${
+        className={`hobby-tag px-3 py-1.5 rounded-full text-xs font-medium border bg-[#0A0908] transition-all duration-200 cursor-pointer ${
           open
-            ? "border-[#5BAECC]/60 text-[#F5EFE8] shadow-[0_0_12px_rgba(91,174,204,0.25)]"
-            : `border-[#252118] text-[#8B8178] ${glowClass}`
+            ? "hobby-tag-active border-transparent text-[#F5EFE8]"
+            : "border-[#252118] text-[#8B8178]"
         }`}
       >
         {label}
@@ -123,9 +127,15 @@ function HobbyTag({ label }: { label: string }) {
               {details.pokemon && (
                 <div className="flex gap-2 pt-3 px-3.5 justify-center">
                   {sprites.length > 0
-                    ? sprites.map((s) => (
-                        <img key={s.name} src={s.url} alt={s.name} width={96} height={96} style={{ imageRendering: "pixelated" }} />
-                      ))
+                    ? sprites.map((s) => {
+                        const link = details.pokemonLinks?.find((l) => l.name === s.name);
+                        const sprite = <img key={s.name} src={s.url} alt={s.name} width={96} height={96} style={{ imageRendering: "pixelated" }} />;
+                        return link ? (
+                          <a key={s.name} href={link.href} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity duration-150">
+                            {sprite}
+                          </a>
+                        ) : sprite;
+                      })
                     : details.pokemon.map((name) => (
                         <div key={name} className="w-24 h-24 rounded-lg bg-[#0A0908] border border-[#252118] animate-pulse" />
                       ))}
@@ -138,7 +148,8 @@ function HobbyTag({ label }: { label: string }) {
                     href={details.href}
                     target={details.href.startsWith("mailto") ? undefined : "_blank"}
                     rel="noopener noreferrer"
-                    className="text-[11px] font-medium text-[#5BAECC] hover:text-[#7ECDE6] transition-colors duration-150"
+                    className="text-[11px] font-medium transition-colors duration-150"
+                    style={{ color: "var(--accent)" }}
                   >
                     {details.linkLabel}
                   </a>
@@ -177,7 +188,7 @@ function MarqueeStrip({ reverse = false }: { reverse?: boolean }) {
         {items.map((item, i) => (
           <div key={`${item}-${i}`} className="flex items-center gap-6 shrink-0">
             <span className="text-sm font-medium text-[#4A4540] whitespace-nowrap">{item}</span>
-            <span className="text-[#5BAECC]/40 text-lg leading-none">✦</span>
+            <span className="text-lg leading-none" style={{ color: "var(--accent)", opacity: 0.4 }}>✦</span>
           </div>
         ))}
       </motion.div>
@@ -205,7 +216,8 @@ function PrincipleCard({
     >
       <div className="flex items-start gap-3">
         <span
-          className="font-display text-2xl font-bold text-[#5BAECC]/20 leading-none mt-0.5 select-none group-hover:text-[#5BAECC]/30 transition-colors duration-300"
+          className="font-display text-2xl font-bold leading-none mt-0.5 select-none transition-colors duration-300"
+          style={{ color: "var(--accent)", opacity: 0.2 }}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -213,6 +225,79 @@ function PrincipleCard({
           <h4 className="text-sm font-semibold text-[#F5EFE8] mb-1.5">{principle.label}</h4>
           <p className="text-sm text-[#8B8178] leading-relaxed">{principle.description}</p>
         </div>
+      </div>
+    </motion.div>
+  );
+}
+
+const ABOUT_PHOTOS = [
+  "/Landing Page/About 1.jpg",
+  "/Landing Page/About 2 (1).jpg",
+  "/Landing Page/About 3.jpg",
+];
+
+function PhotoCarousel() {
+  const [idx, setIdx] = useState(0);
+  const prev = () => setIdx(i => (i - 1 + ABOUT_PHOTOS.length) % ABOUT_PHOTOS.length);
+  const next = () => setIdx(i => (i + 1) % ABOUT_PHOTOS.length);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, ease: [0.43, 0.195, 0.02, 1] }}
+      className="flex flex-col gap-3"
+    >
+      {/* Photo */}
+      <div className="rounded-2xl overflow-hidden border border-[#252118]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={ABOUT_PHOTOS[idx]}
+              alt={`Val Chen ${idx + 1}`}
+              className="w-full h-auto block"
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-between px-1">
+        <button
+          onClick={prev}
+          className="text-[11px] tracking-widest uppercase text-[#4A4540] hover:text-[#8B8178] transition-colors"
+        >
+          ← prev
+        </button>
+        <div className="flex gap-1.5">
+          {ABOUT_PHOTOS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              style={{
+                width: i === idx ? 16 : 6,
+                height: 4,
+                borderRadius: 99,
+                background: i === idx ? "var(--accent)" : "#252118",
+                transition: "width 0.3s, background 0.3s",
+              }}
+            />
+          ))}
+        </div>
+        <button
+          onClick={next}
+          className="text-[11px] tracking-widest uppercase text-[#4A4540] hover:text-[#8B8178] transition-colors"
+        >
+          next →
+        </button>
       </div>
     </motion.div>
   );
@@ -263,7 +348,7 @@ export default function About() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-6 font-display text-5xl md:text-6xl lg:text-7xl font-bold text-[#F5EFE8] leading-tight tracking-tight"
           >
-            Beyond <span className="italic text-[#5BAECC]">the screen</span>
+            Beyond <span className="italic" style={{ color: "var(--accent)" }}>the screen</span>
           </motion.h2>
         </div>
 
@@ -284,10 +369,10 @@ export default function About() {
                 className="relative"
               >
                 {/* Quote mark */}
-                <span className="absolute -top-4 -left-2 font-display text-7xl leading-none text-[#5BAECC]/10 select-none">
+                <span className="absolute -top-4 -left-2 font-display text-7xl leading-none select-none" style={{ color: "var(--accent)", opacity: 0.1 }}>
                   &ldquo;
                 </span>
-                <p className="font-display text-xl md:text-2xl font-medium text-[#F5EFE8] leading-snug pl-4 border-l-2 border-[#5BAECC]/40">
+                <p className="font-display text-xl md:text-2xl font-medium text-[#F5EFE8] leading-snug pl-4 border-l-2" style={{ borderColor: "color-mix(in srgb, var(--accent) 40%, transparent)" }}>
                   {about.pullQuote}
                 </p>
               </motion.div>
@@ -317,9 +402,12 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-8 p-5 rounded-xl border border-[#252118] bg-[#141210]/40"
             >
-              <h4 className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#4A4540] mb-3">
-                Outside work
-              </h4>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#4A4540]">
+                  Outside work
+                </h4>
+                <span className="text-[10px] text-[#3A3530] italic">click to explore</span>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {about.interests.map((interest) => (
                   <HobbyTag key={interest} label={interest} />
@@ -328,24 +416,8 @@ export default function About() {
             </motion.div>
           </div>
 
-          {/* Right: Principles */}
-          <div>
-            <motion.h3
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#4A4540] mb-6"
-            >
-              How I think
-            </motion.h3>
-
-            <div className="space-y-3">
-              {about.principles.map((p, i) => (
-                <PrincipleCard key={p.label} principle={p} index={i} />
-              ))}
-            </div>
-          </div>
+          {/* Right: Photo carousel */}
+          <PhotoCarousel />
         </div>
 
         {/* Looking for section */}
@@ -390,18 +462,21 @@ export default function About() {
             <div className="flex flex-col gap-3 shrink-0">
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#5BAECC] text-[#0A0908] text-sm font-semibold hover:bg-[#7ECDE6] transition-all duration-300 hover:shadow-[0_0_30px_rgba(91,174,204,0.3)]"
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full text-[#0A0908] text-sm font-semibold transition-all duration-300"
+                style={{ background: "var(--accent)" }}
               >
-                <span>Get in touch</span>
+                <span>{siteConfig.email}</span>
                 <span className="group-hover:translate-x-0.5 transition-transform duration-200">→</span>
               </a>
               <a
                 href={siteConfig.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#252118] text-[#F5EFE8]/60 text-sm font-medium hover:border-[#3a3020] hover:text-[#F5EFE8] transition-all duration-300 justify-center"
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300"
+                style={{ border: "1px solid var(--accent)", color: "var(--accent)" }}
               >
-                LinkedIn ↗
+                <span>LinkedIn</span>
+                <span className="group-hover:translate-x-0.5 transition-transform duration-200">↗</span>
               </a>
             </div>
           </div>

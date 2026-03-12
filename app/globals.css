@@ -11,6 +11,10 @@
   --accent: #5BAECC;
 }
 
+[data-play-mode="true"] {
+  --accent: #F0609E;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -32,11 +36,12 @@ body {
   background: #0A0908;
 }
 ::-webkit-scrollbar-thumb {
-  background: #5BAECC;
+  background: var(--accent);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7ECDE6;
+  background: var(--accent);
+  opacity: 0.8;
 }
 
 /* ── Selection ────────────────────────────── */
@@ -113,9 +118,21 @@ body {
   left: 0;
   width: 0;
   height: 1px;
-  background: #5BAECC;
+  background: var(--accent);
   transition: width 0.3s ease;
 }
 .link-hover:hover::after {
   width: 100%;
+}
+
+/* ── Hobby tag accent hover ───────────────── */
+.hobby-tag:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  color: #F5EFE8;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.hobby-tag-active {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  color: #F5EFE8;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 25%, transparent);
 }

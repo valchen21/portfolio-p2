@@ -52,7 +52,7 @@ export default function ResumeModal() {
                 <a
                   href="/resume.pdf"
                   download="Val_Chen_Resume.pdf"
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#5BAECC] text-[#0A0908] text-xs font-semibold hover:bg-[#7ECDE6] transition-colors duration-200"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#252118] text-[#F5EFE8] text-xs font-semibold hover:bg-[#2e2820] transition-colors duration-200"
                 >
                   Download ↓
                 </a>

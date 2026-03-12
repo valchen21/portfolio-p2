@@ -40,7 +40,8 @@ function TimelineItem({
         initial={{ scale: 0 }}
         animate={inView ? { scale: 1 } : {}}
         transition={{ duration: 0.4, delay: index * 0.12 + 0.2 }}
-        className="absolute left-[-4px] top-2 w-2.5 h-2.5 rounded-full border-2 border-[#5BAECC] bg-[#0A0908]"
+        className="absolute left-[-4px] top-2 w-2.5 h-2.5 rounded-full border-2 bg-[#0A0908]"
+        style={{ borderColor: "var(--accent)" }}
       />
 
       {/* Content */}
@@ -48,7 +49,7 @@ function TimelineItem({
         <div>
           <h4 className="text-base font-semibold text-[#F5EFE8]">{item.role}</h4>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-sm text-[#5BAECC] font-medium">{item.company}</span>
+            <span className="text-sm font-medium" style={{ color: "var(--accent)" }}>{item.company}</span>
             <span className="text-[#4A4540]">·</span>
             <span className="text-xs text-[#4A4540]">{item.location}</span>
           </div>
@@ -63,7 +64,7 @@ function TimelineItem({
       <ul className="space-y-1.5">
         {item.highlights.map((h, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-[#8B8178]">
-            <span className="mt-1.5 w-1 h-1 rounded-full bg-[#5BAECC]/60 shrink-0" />
+            <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ background: "var(--accent)", opacity: 0.6 }} />
             {h}
           </li>
         ))}
@@ -84,7 +85,7 @@ function SkillGroup({ category, items, index }: { category: string; items: strin
       transition={{ duration: 0.6, delay: index * 0.08 }}
       className="p-5 rounded-xl border border-[#252118] bg-[#141210]/60"
     >
-      <h4 className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#5BAECC] mb-4">
+      <h4 className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4" style={{ color: "var(--accent)" }}>
         {category}
       </h4>
       <div className="flex flex-wrap gap-1.5">
@@ -115,13 +116,13 @@ function EducationCard({ edu, index }: { edu: (typeof education)[0]; index: numb
     >
       <div
         className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-        style={{ background: "rgba(91,174,204,0.12)", border: "1px solid rgba(91,174,204,0.2)" }}
+        style={{ background: "color-mix(in srgb, var(--accent) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)" }}
       >
-        <span className="text-[#5BAECC] text-xs">✦</span>
+        <span className="text-xs" style={{ color: "var(--accent)" }}>✦</span>
       </div>
       <div>
         <h4 className="text-sm font-semibold text-[#F5EFE8]">{edu.degree}</h4>
-        <p className="text-xs text-[#5BAECC] font-medium mt-0.5">{edu.institution}</p>
+        <p className="text-xs font-medium mt-0.5" style={{ color: "var(--accent)" }}>{edu.institution}</p>
         <div className="flex items-center gap-2 mt-2">
           <span className="text-[10px] text-[#4A4540]">{edu.period}</span>
           {edu.note && (
@@ -174,12 +175,13 @@ export default function Resume() {
           >
             <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-[#F5EFE8] leading-tight tracking-tight">
               Background &<br />
-              <span className="italic text-[#5BAECC]">Expertise</span>
+              <span className="italic" style={{ color: "var(--accent)" }}>Expertise</span>
             </h2>
 
             <button
               onClick={() => window.dispatchEvent(new Event("openResume"))}
-              className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#5BAECC]/40 text-[#5BAECC] text-sm font-medium hover:bg-[#5BAECC] hover:text-[#0A0908] transition-all duration-300 self-start md:self-auto"
+              className="group inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 self-start md:self-auto"
+              style={{ border: "1px solid color-mix(in srgb, var(--accent) 40%, transparent)", color: "var(--accent)" }}
             >
               <span>Download Resume</span>
               <span className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200">↗</span>

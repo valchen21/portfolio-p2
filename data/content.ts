@@ -4,14 +4,14 @@
 export const siteConfig = {
   name: "Val Chen",
   nameShort: "VC",
-  role: "Product · Design · Strategy",
+  role: "Product · Design · Marketing",
   headline: "Val Chen",
   subheadline:
     "UCSD Business Economics student and aspiring PM at the intersection of design, short form media marketing, and creative strategy. I work best where curiosity meets execution.",
   email: "val.chen21@gmail.com",
   linkedin: "https://www.linkedin.com/in/val-chen/",
   github: "https://github.com",
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/Resume - Val Chen.pdf",
 };
 
 // ─────────────────────────────────────────────
@@ -37,7 +37,7 @@ export const projects = [
     category: "Product · PM Fellowship",
     role: "Product Manager Fellow",
     summary:
-      "A 7-month PM fellowship at UCSD - conducting user research, writing PRDs, and leading a 3-person cross-functional team to redesign and ship a product end-to-end.",
+      "A 7-month PM fellowship at UCSD. I conducted user research, wrote PRDs, and led a 3-person cross-functional team to redesign and ship a product end-to-end.",
     problem:
       "The product had accumulated 10+ friction points in its core user flows that had gone unaddressed due to lack of structured PM process. Users were dropping off without a clear signal of why.",
     outcome:
@@ -53,13 +53,13 @@ export const projects = [
   {
     id: "dsgn100",
     index: "02",
-    title: "UCSD DSGN 100",
+    title: "Pantry Pal",
     category: "UX · Academic Capstone",
     role: "UX Designer & Researcher",
     summary:
-      "End-to-end UX capstone for UCSD's design program - moving from discovery research through ideation, wireframing, and a polished high-fidelity prototype presented to faculty and peers.",
+      "End-to-end UX capstone for UCSD's design program. I moved from discovery research through ideation, wireframing, and a polished high-fidelity prototype presented to faculty and peers.",
     problem:
-      "The brief required identifying a real, underserved problem through primary research and designing a solution from scratch - no predefined scope, no existing product to iterate on.",
+      "The brief required identifying a real, underserved problem through primary research and designing a solution from scratch. No predefined scope, no existing product to iterate on.",
     outcome:
       "Delivered a high-fidelity prototype with documented research, user journey maps, and a final design presentation to a panel of UCSD design faculty.",
     skills: ["UX Research", "Figma", "Prototyping", "User Testing", "Design Systems", "Presentation"],
@@ -68,19 +68,21 @@ export const projects = [
     accentLight: "#D9BF7A",
     number: "02",
     caseStudyUrl: "/case-studies/dsgn100",
+    coverImage: "/Pantry Pal/Pantry Pal Cover.PNG",
   },
   {
     id: "akpsi",
     index: "03",
-    title: "AKPsi Recruitment",
+    title: "Align Your Stars",
+    coverImage: "/Align your Stars/Align Your Stars.PNG",
     category: "Operations · Growth",
-    role: "President, Alpha Kappa Psi",
+    role: "VP of Recruitment, Alpha Kappa Psi",
     summary:
-      "Overhauled recruitment operations as President of UCSD's Alpha Kappa Psi - building a custom recruitment portal from scratch and running a campaign that broke every previous record.",
+      "Overhauled recruitment operations as VP of Recruitment at UCSD's Alpha Kappa Psi. I built a custom recruitment portal from scratch and ran a campaign that broke every previous record.",
     problem:
-      "Recruitment was entirely manual - no centralized portal, inconsistent outreach, and no visibility into funnel metrics. The process didn't scale and was burning out the team.",
+      "Recruitment was entirely manual with no centralized portal, inconsistent outreach, and no visibility into funnel metrics. The process didn't scale and was burning out the team.",
     outcome:
-      "102k Instagram impressions in 27 days. Follower count up 29.1%. Interest form signups up 62.7% with 450+ forms submitted - the most in chapter history. Built the portal with a 14-person team of designers and developers.",
+      "102k Instagram impressions in 27 days. Follower count up 29.1%. Interest form signups up 62.7% with 450+ forms submitted, the most in chapter history. Built the portal with a 14-person team of designers and developers.",
     skills: ["Operations Strategy", "Growth Marketing", "Vercel", "Figma", "Team Leadership", "Campaign Planning"],
     gradient: "from-[#0f1a14] via-[#0f2018] to-[#0f1a14]",
     accentColor: "#4AB8A0",
@@ -91,10 +93,11 @@ export const projects = [
     id: "bereal",
     index: "04",
     title: "BeReal",
+    coverImage: "/BeReal/BeReal Cover.png",
     category: "Product · Case Study",
     role: "Product Manager",
     summary:
-      "A product management deep-dive into BeReal's retention and engagement mechanics - identifying core drop-off points, proposing feature solutions, and stress-testing them through user interviews.",
+      "A product management deep-dive into BeReal's retention and engagement mechanics. I identified core drop-off points, proposed feature solutions, and stress-tested them through user interviews.",
     problem:
       "BeReal had a novelty problem: high initial installs followed by steep drop-off. The dual-camera constraint that made it compelling also made it easy to abandon when the habit didn't stick.",
     outcome:
@@ -104,6 +107,51 @@ export const projects = [
     accentColor: "#B44A8B",
     accentLight: "#D472A8",
     number: "04",
+  },
+];
+
+// ─────────────────────────────────────────────
+//  PLAY PROJECTS
+// ─────────────────────────────────────────────
+export const playProjects = [
+  {
+    id: "meloettify",
+    index: "01",
+    title: "Meloettify",
+    category: "Creative · Music Tech",
+    role: "Creator & Designer",
+    summary:
+      "A web app that analyzes your Spotify listening history and assigns you a Pokémon that represents your music taste. Real matching engine, real genre science. Because someone had to merge these two things.",
+    problem:
+      "Streaming platforms know your taste better than anyone, but they never reflect it back in a meaningful way. Growing up with both Pokémon and an obsessive playlist habit, I kept thinking: these two things belong together.",
+    outcome:
+      "Live on Vercel. Built with vanilla JS, a custom scoring engine across 18 Pokémon types and 8 music dimensions, a team of 6 Pokémon per user, and a DS trainer card generator. Every Pokémon description, type definition, and celebrity card was personally written.",
+    skills: ["Vanilla JS", "Vite", "Vercel", "Spotify API", "Last.fm API", "CSS / Glassmorphism", "Algorithm Design", "html2canvas"],
+    gradient: "from-[#180d18] via-[#1f1025] to-[#180d18]",
+    accentColor: "#F0609E",
+    accentLight: "#F8A0C0",
+    number: "01",
+    coverImage: "/Meloettify/www.meloettify.online_.png",
+    caseStudyUrl: "/case-studies/meloettify",
+  },
+  {
+    id: "personalized-cd",
+    index: "02",
+    title: "Personalized CD",
+    category: "Creative · Product Design",
+    role: "Product Designer",
+    summary:
+      "A gifting experience that revives the physical mixtape — personalized CDs with custom artwork, handpicked tracklists, and a companion digital experience.",
+    problem:
+      "Digital music gifts feel hollow. AirDropping a playlist has none of the soul of a CD someone made for you — with their own handwriting on the sleeve.",
+    outcome:
+      "Designed the full gifting flow from song curation to physical fulfillment. Created brand identity, packaging mockups, and a companion web app prototype.",
+    skills: ["Brand Design", "Product Strategy", "Packaging", "Figma", "Creative Direction"],
+    gradient: "from-[#0d1218] via-[#101825] to-[#0d1218]",
+    accentColor: "#8B60F0",
+    accentLight: "#AA88F8",
+    number: "02",
+    caseStudyUrl: "/case-studies/personalized-cd",
   },
 ];
 
@@ -208,7 +256,7 @@ export const skills = {
     "Notion",
     "Google Suite",
     "Power BI",
-    "Python",
+    "Claude Code",
     "R",
     "Stata",
     "Figma",
@@ -220,16 +268,16 @@ export const skills = {
 // ─────────────────────────────────────────────
 export const about = {
   pullQuote:
-    "The best products don't just solve problems - they make you feel something.",
+    "The best products don't just solve problems. They make you feel something.",
   bio: [
-    "Hey, I'm Val - a UCSD undergraduate studying Business Economics. I found Product Management at the exact intersection of everything I love: people, art, and building.",
-    "Growing up, my parents' philosophy was 'try everything.' Piano, watercolor, Taekwondo - I did it all. That same curiosity carried into college, where business and design both felt like natural extensions of who I am. Product Management was the answer that let me pursue both without choosing.",
-    "My goal is to bridge creativity and strategy - bringing ideas to life while keeping the user at the center of every decision. I care about building things that are not just functional, but genuinely meaningful.",
+    "Hey, I'm Val, a UCSD undergraduate studying Business Economics. I found Product Management at the exact intersection of everything I love: people, art, and building.",
+    "Growing up, my parents' philosophy was 'try everything.' Photography, watercolor, Taekwondo. I did it all. That same curiosity carried into college, where business and design both felt like natural extensions of who I am. Product Management was the answer that let me pursue both without choosing.",
+    "My goal is to bridge creativity and strategy. I want to bring ideas to life while keeping the user at the center of every decision. I care about building things that are not just functional, but genuinely meaningful.",
   ],
   principles: [
     {
       label: "Start with the human",
-      description: "Every product decision I make traces back to a real user insight. Not an assumption - an insight.",
+      description: "Every product decision I make traces back to a real user insight. Not an assumption. An insight.",
     },
     {
       label: "Clarity over cleverness",
@@ -237,7 +285,7 @@ export const about = {
     },
     {
       label: "Try everything once",
-      description: "My best ideas have come from unexpected places - piano, Taekwondo, a random walk. I stay curious.",
+      description: "My best ideas have come from unexpected places. Photography, Taekwondo, a random walk. I stay curious.",
     },
     {
       label: "Ship, learn, repeat",
@@ -246,7 +294,7 @@ export const about = {
   ],
   interests: ["Wong Kar Wai films", "Vietnamese egg coffee", "LEGOs", "Spotify playlists", "Pokémon", "Bucket lists"],
   lookingFor:
-    "PM, APM, or growth/strategy roles at product-driven companies - ideally somewhere that values both analytical rigor and design taste. Open to full-time and internship opportunities.",
+    "PM, APM, or growth/strategy roles at product-driven companies, ideally somewhere that values both analytical rigor and design taste. Open to full-time and internship opportunities.",
 };
 
 // ─────────────────────────────────────────────

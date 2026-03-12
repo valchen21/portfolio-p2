@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Val Chen - Portfolio",
-    description: "Product · Design · Strategy",
+    description: "Product · Design · Marketing",
     type: "website",
   },
 };

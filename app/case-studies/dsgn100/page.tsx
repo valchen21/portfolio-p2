@@ -27,23 +27,31 @@ const GREEN_LIGHT = "#72B88A";
 // ─── Sticky TOC ───────────────────────────────────────────────────────────────
 function TableOfContents({ active }: { active: string }) {
   return (
-    <nav className="sticky top-28 flex flex-col gap-0.5 w-44 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
-      <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-[#4A4540] mb-3">
+    <nav className="sticky top-28 flex flex-col gap-0.5 w-48 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
+      <p className="text-[11px] font-medium tracking-[0.25em] uppercase text-[#4A4540] mb-4">
         Contents
       </p>
-      {TOC_ITEMS.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          className={`text-xs py-1 px-2 rounded transition-all duration-200 ${
-            active === item.id
-              ? "text-[#72B88A] font-medium bg-[#72B88A]/10"
-              : "text-[#5C5650] hover:text-[#F5EFE8]"
-          }`}
-        >
-          {item.label}
-        </a>
-      ))}
+      {TOC_ITEMS.map((item) => {
+        const isActive = active === item.id;
+        return (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className="group flex items-center gap-3 py-2 transition-all duration-200"
+          >
+            <span
+              className="h-px transition-all duration-300 shrink-0"
+              style={{ width: isActive ? "20px" : "8px", background: isActive ? GREEN : "#3A3530" }}
+            />
+            <span
+              className="text-sm font-medium transition-colors duration-200 leading-tight"
+              style={{ color: isActive ? "#F5EFE8" : "#8B8178" }}
+            >
+              {item.label}
+            </span>
+          </a>
+        );
+      })}
     </nav>
   );
 }

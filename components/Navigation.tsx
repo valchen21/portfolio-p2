@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/data/content";
+import { useMode } from "@/components/ModeContext";
 
-const navItems = [
-  { label: "Work", href: "#projects" },
+const baseNavItems = [
+  { label: "Home", href: "#hero" },
+  { label: "Projects", href: "#projects" },
   { label: "Resume", href: "#resume" },
   { label: "About", href: "#about" },
 ];
@@ -62,6 +64,13 @@ export default function Navigation() {
   const active = useActiveSection();
   const scrolled = useScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isPlayMode, toggleMode, accentHex } = useMode();
+
+  const navItems = baseNavItems.map((item) =>
+    item.href === "#projects"
+      ? { ...item, label: isPlayMode ? "Passion Projects" : "Work Projects" }
+      : item
+  );
 
   return (
     <>
@@ -82,7 +91,7 @@ export default function Navigation() {
             className="group flex items-center gap-3"
             aria-label="Back to top"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#5BAECC] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--accent)" }}>
               <span className="font-display text-[10px] font-bold text-[#0A0908] tracking-wider">
                 {siteConfig.nameShort}
               </span>
@@ -119,9 +128,33 @@ export default function Navigation() {
               );
             })}
 
+            {/* Mode toggle */}
+            <button
+              onClick={toggleMode}
+              className="ml-3 flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium tracking-widest uppercase transition-all duration-300"
+              style={{
+                background: isPlayMode ? "rgba(240,96,158,0.12)" : "rgba(91,174,204,0.10)",
+                border: `1px solid ${isPlayMode ? "rgba(240,96,158,0.35)" : "rgba(91,174,204,0.25)"}`,
+                color: accentHex,
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 6, height: 6,
+                  borderRadius: "50%",
+                  background: accentHex,
+                  boxShadow: `0 0 6px ${accentHex}`,
+                  transition: "background 0.3s, box-shadow 0.3s",
+                }}
+              />
+              {isPlayMode ? "Play" : "Work"}
+            </button>
+
             <button
               onClick={() => window.dispatchEvent(new Event("openResume"))}
-              className="ml-3 px-4 py-2 text-sm font-medium rounded-full border border-[#5BAECC]/40 text-[#5BAECC] hover:bg-[#5BAECC]/10 hover:border-[#5BAECC]/70transition-all duration-200"
+              className="ml-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200"
+              style={{ border: "1px solid var(--accent)", color: "var(--accent)" }}
             >
               Resume ↗
             </button>
@@ -177,8 +210,20 @@ export default function Navigation() {
               ))}
               <div className="h-px bg-[#252118] my-2" />
               <button
+                onClick={() => { toggleMode(); setMobileOpen(false); }}
+                className="text-left px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 flex items-center gap-3"
+                style={{ color: accentHex }}
+              >
+                <span style={{
+                  display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                  background: accentHex, boxShadow: `0 0 6px ${accentHex}`,
+                }} />
+                {isPlayMode ? "Switch to Work mode" : "Switch to Play mode"}
+              </button>
+              <button
                 onClick={() => window.dispatchEvent(new Event("openResume"))}
-                className="text-left px-4 py-3 text-base font-medium text-[#5BAECC] hover:bg-[#5BAECC]/10 rounded-lg transition-all duration-200"
+                className="text-left px-4 py-3 text-base font-medium rounded-lg transition-all duration-200"
+                style={{ color: "var(--accent)" }}
               >
                 Download Resume ↗
               </button>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1772" height="1394" viewBox="0 0 1772 1394">
+  <!-- Background -->
+  <rect width="1772" height="1394" fill="#f0ece8"/>
+
+  <!-- Left spine (0–72px) -->
+  <rect x="0" y="0" width="72" height="1394" fill="#d4c9be" opacity="0.6"/>
+  <text x="36" y="720" font-family="monospace" font-size="18" fill="#666" text-anchor="middle" transform="rotate(-90,36,720)">LEFT SPINE · 72 px</text>
+
+  <!-- Back panel (72–1700px) -->
+  <rect x="72" y="0" width="1628" height="1394" fill="#fff" opacity="0.4"/>
+  <text x="886" y="680" font-family="monospace" font-size="28" fill="#aaa" text-anchor="middle">BACK PANEL · 1628 × 1394 px</text>
+  <text x="886" y="720" font-family="monospace" font-size="18" fill="#bbb" text-anchor="middle">track listing · credits · barcode</text>
+
+  <!-- Right spine (1700–1772px) -->
+  <rect x="1700" y="0" width="72" height="1394" fill="#d4c9be" opacity="0.6"/>
+  <text x="1736" y="720" font-family="monospace" font-size="18" fill="#666" text-anchor="middle" transform="rotate(-90,1736,720)">RIGHT SPINE · 72 px</text>
+
+  <!-- Guide lines -->
+  <line x1="72" y1="0" x2="72" y2="1394" stroke="#e05555" stroke-width="1.5" stroke-dasharray="10,6"/>
+  <line x1="1700" y1="0" x2="1700" y2="1394" stroke="#e05555" stroke-width="1.5" stroke-dasharray="10,6"/>
+
+  <!-- Dimension callouts -->
+  <!-- Full width -->
+  <line x1="0" y1="1360" x2="1772" y2="1360" stroke="#999" stroke-width="1"/>
+  <line x1="0" y1="1350" x2="0" y2="1370" stroke="#999" stroke-width="1"/>
+  <line x1="1772" y1="1350" x2="1772" y2="1370" stroke="#999" stroke-width="1"/>
+  <text x="886" y="1385" font-family="monospace" font-size="16" fill="#888" text-anchor="middle">1772 px total</text>
+
+  <!-- Left spine width -->
+  <line x1="0" y1="30" x2="72" y2="30" stroke="#e05555" stroke-width="1"/>
+  <text x="36" y="22" font-family="monospace" font-size="13" fill="#e05555" text-anchor="middle">72</text>
+
+  <!-- Back panel width -->
+  <line x1="72" y1="30" x2="1700" y2="30" stroke="#e05555" stroke-width="1"/>
+  <text x="886" y="22" font-family="monospace" font-size="13" fill="#e05555" text-anchor="middle">1628</text>
+
+  <!-- Right spine width -->
+  <line x1="1700" y1="30" x2="1772" y2="30" stroke="#e05555" stroke-width="1"/>
+  <text x="1736" y="22" font-family="monospace" font-size="13" fill="#e05555" text-anchor="middle">72</text>
+</svg>

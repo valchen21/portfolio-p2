@@ -15,9 +15,8 @@ const navLinks = [
 ];
 
 const socialLinks = [
+  { label: siteConfig.email, href: `mailto:${siteConfig.email}` },
   { label: "LinkedIn", href: siteConfig.linkedin },
-  { label: "GitHub", href: siteConfig.github },
-  { label: "Email", href: `mailto:${siteConfig.email}` },
 ];
 
 export default function Footer() {
@@ -35,17 +34,17 @@ export default function Footer() {
               onClick={() => scrollTo("#hero")}
               className="group flex items-center gap-3 mb-4"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#5BAECC] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--accent)" }}>
                 <span className="font-display text-[10px] font-bold text-[#0A0908] tracking-wider">
                   {siteConfig.nameShort}
                 </span>
               </div>
-              <span className="font-display text-lg font-bold text-[#F5EFE8] group-hover:text-[#5BAECC] transition-colors duration-200">
+              <span className="font-display text-lg font-bold text-[#F5EFE8] transition-colors duration-200">
                 {siteConfig.name}
               </span>
             </button>
             <p className="text-sm text-[#4A4540] max-w-[240px] leading-relaxed">
-              Product · Design · Strategy.<br />
+              Product · Design · Marketing.<br />
               Building things people love.
             </p>
           </div>
@@ -99,9 +98,23 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <p className="text-xs text-[#4A4540]">
-            © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
-          </p>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs text-[#4A4540]">
+              © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+            </p>
+            <p className="text-xs text-[#4A4540]">
+              made with Coffee, Love, and{" "}
+              <a
+                href="https://www.youtube.com/watch?v=I067BonnW48&list=RDI067BonnW48&start_radio=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display italic text-sm hover:text-[#8B8178] transition-colors duration-200"
+                style={{ color: "var(--accent)" }}
+              >
+                The Marías
+              </a>
+            </p>
+          </div>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-[#4A8B6A]" />
             <span className="text-xs text-[#4A4540]">Available for new projects</span>

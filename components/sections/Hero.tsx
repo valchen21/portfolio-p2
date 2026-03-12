@@ -77,6 +77,8 @@ const BUBBLES = [
   { label: "Strategy", color: "#4A8B6A" },
   { label: "Brand",    color: "#CC5B7A" },
   { label: "Culture",  color: "#C4A44A" },
+  { label: "Vision",   color: "#00FF88" },
+  { label: "Play",     color: "#FF3A3A" },
 ];
 const BUBBLE_LABELS = BUBBLES.map((b) => b.label);
 const R = 52; // radius px
@@ -113,11 +115,13 @@ function FloatingBubbles() {
 
     const seeds = [
       { x: W * 0.08, y: H * 0.50 },
-      { x: W * 0.84, y: H * 0.13 },
-      { x: W * 0.80, y: H * 0.48 },
-      { x: W * 0.87, y: H * 0.78 },
+      { x: W * 0.96, y: H * 0.13 },
+      { x: W * 0.65, y: H * 0.70 },
+      { x: W * 0.94, y: H * 0.78 },
       { x: W * 0.10, y: H * 0.75 },
-      { x: W * 0.12, y: H * 0.40 },
+      { x: W * 0.12, y: H * 0.20 },
+      { x: W * 0.65, y: H * 0.22 },
+      { x: W * 0.55, y: H * 0.80 },
     ];
 
     balls.current = seeds.map(({ x, y }) => ({
@@ -436,6 +440,8 @@ function RotatingPhrase({ delay }: { delay: number }) {
 
 export default function Hero() {
   const lines = siteConfig.headline.split("\n");
+  const [bubblesVisible, setBubblesVisible] = useState(true);
+  const [resetKey, setResetKey] = useState(0);
 
   return (
     <section
@@ -445,7 +451,7 @@ export default function Hero() {
       <HeroBackground />
 
       {/* 8-ball physics bubbles */}
-      <FloatingBubbles />
+      {bubblesVisible && <FloatingBubbles key={resetKey} />}
 
       {/* Welcome note */}
       <motion.div
@@ -453,7 +459,7 @@ export default function Hero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 1.8, ease: [0.43, 0.195, 0.02, 1] }}
         className="absolute hidden lg:block pointer-events-none"
-        style={{ right: "3%", top: "25%", transform: "translateY(-50%)", zIndex: 14 }}
+        style={{ right: "3%", top: "15%", transform: "translateY(-50%)", zIndex: 14 }}
       >
         <Image
           src="/Landing Page/Welcome!.png"
@@ -473,7 +479,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex items-center gap-3 mb-10"
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#5BAECC]" />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />
           <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#8B8178]">
             {siteConfig.role}
           </span>
@@ -504,11 +510,13 @@ export default function Hero() {
         >
           <button
             onClick={() => scrollTo("#projects")}
-            className="group relative overflow-hidden px-7 py-3.5 rounded-full bg-[#5BAECC] text-[#0A0908] text-sm font-semibold tracking-wide transition-all duration-300 hover:shadow-[0_0_40px_rgba(91,174,204,0.35)]"
+            className="group relative overflow-hidden px-7 py-3.5 rounded-full text-[#0A0908] text-sm font-semibold tracking-wide transition-all duration-300"
+            style={{ background: "var(--accent)" }}
           >
             <span className="relative z-10">View Work</span>
             <motion.div
-              className="absolute inset-0 bg-[#7ECDE6]"
+              className="absolute inset-0"
+              style={{ background: "var(--accent)", filter: "brightness(1.15)" }}
               initial={{ x: "-100%" }}
               whileHover={{ x: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
@@ -555,6 +563,28 @@ export default function Hero() {
           className="w-px h-12 bg-gradient-to-b from-[#5BAECC]/60 to-transparent"
         />
         <span className="text-[10px] tracking-[0.2em] uppercase text-[#4A4540]">Scroll</span>
+      </motion.div>
+
+      {/* Ball controls — bottom right, desktop only */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 2.2 }}
+        className="absolute bottom-10 right-6 hidden lg:flex items-center gap-2"
+        style={{ zIndex: 20 }}
+      >
+        <button
+          onClick={() => setResetKey((k) => k + 1)}
+          className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B8178] hover:text-[#F5EFE8] transition-colors duration-200 px-4 py-2 rounded-full border border-[#3a3530] bg-[#141210]/90 backdrop-blur-sm hover:border-[#5a5048]"
+        >
+          ↺ Reset
+        </button>
+        <button
+          onClick={() => setBubblesVisible((v) => !v)}
+          className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B8178] hover:text-[#F5EFE8] transition-colors duration-200 px-4 py-2 rounded-full border border-[#3a3530] bg-[#141210]/90 backdrop-blur-sm hover:border-[#5a5048]"
+        >
+          {bubblesVisible ? "✕ Hide Bubbles" : "◎ Show Bubbles"}
+        </button>
       </motion.div>
     </section>
   );

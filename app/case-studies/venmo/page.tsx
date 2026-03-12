@@ -36,7 +36,7 @@ const VENMO_LIGHT = "#7ECDE6";
 // ─── Sticky TOC ───────────────────────────────────────────────────────────────
 function TableOfContents({ active }: { active: string }) {
   return (
-    <nav className="sticky top-28 flex flex-col gap-0.5 w-44 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
+    <nav className="sticky top-28 flex flex-col gap-0.5 w-40 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
       <p className="text-[10px] font-medium tracking-[0.25em] uppercase text-[#4A4540] mb-3">
         Contents
       </p>
@@ -46,15 +46,15 @@ function TableOfContents({ active }: { active: string }) {
           <a
             key={item.id}
             href={`#${item.id}`}
-            className="group flex items-center gap-2.5 py-[3px] transition-all duration-200"
+            className="group flex items-center gap-2 py-1.5 transition-all duration-200"
           >
             <span
               className="h-px transition-all duration-300 shrink-0"
-              style={{ width: isActive ? "18px" : "6px", background: isActive ? VENMO_BLUE : "#3A3530" }}
+              style={{ width: isActive ? "16px" : "6px", background: isActive ? VENMO_BLUE : "#3A3530" }}
             />
             <span
-              className="text-[11px] font-medium transition-colors duration-200 leading-tight"
-              style={{ color: isActive ? VENMO_LIGHT : "#6B6560" }}
+              className="text-xs font-medium transition-colors duration-200 leading-tight"
+              style={{ color: isActive ? "#F5EFE8" : "#8B8178" }}
             >
               {item.label}
             </span>
