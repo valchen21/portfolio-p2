@@ -5,9 +5,6 @@ export const metadata: Metadata = {
   title: "Val Chen - Portfolio",
   description:
     "Builder at the intersection of product thinking, creative direction, and go-to-market strategy.",
-  icons: {
-    icon: "/VC Logo.png",
-  },
   openGraph: {
     title: "Val Chen - Portfolio",
     description: "Product · Design · Marketing",

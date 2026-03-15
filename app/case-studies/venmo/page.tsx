@@ -110,6 +110,40 @@ function FadeUp({ children, delay = 0, className = "" }: { children: React.React
   );
 }
 
+const HIFI_SCREENS = ["High Fi 1","High Fi 2","High Fi 4","High Fi 5","High Fi 6","High Fi 7","High Fi 8"];
+
+function HiFiCarousel() {
+  const [index, setIndex] = useState(0);
+  const prev = () => setIndex((i) => (i - 1 + HIFI_SCREENS.length) % HIFI_SCREENS.length);
+  const next = () => setIndex((i) => (i + 1) % HIFI_SCREENS.length);
+
+  return (
+    <div className="flex flex-col items-center gap-6">
+      <div className="relative flex items-center justify-center gap-4 w-full">
+        <button onClick={prev} className="shrink-0 w-9 h-9 rounded-full border border-[#252118] bg-[#0f0d0b] flex items-center justify-center text-[#8B8178] hover:text-[#F5EFE8] hover:border-[#3D95CE]/50 transition-colors">
+          ←
+        </button>
+        <div className="w-56 rounded-2xl overflow-hidden border border-[#252118] aspect-[9/19.5]">
+          <motion.div key={index} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }} className="w-full h-full">
+            <Image src={`/Venmo/${HIFI_SCREENS[index]}.PNG`} alt={HIFI_SCREENS[index]} width={390} height={844} className="w-full h-full object-cover" />
+          </motion.div>
+        </div>
+        <button onClick={next} className="shrink-0 w-9 h-9 rounded-full border border-[#252118] bg-[#0f0d0b] flex items-center justify-center text-[#8B8178] hover:text-[#F5EFE8] hover:border-[#3D95CE]/50 transition-colors">
+          →
+        </button>
+      </div>
+      <div className="flex gap-2">
+        {HIFI_SCREENS.map((_, i) => (
+          <button key={i} onClick={() => setIndex(i)}
+            className="w-1.5 h-1.5 rounded-full transition-colors duration-200"
+            style={{ background: i === index ? VENMO_BLUE : "#252118" }} />
+        ))}
+      </div>
+      <p className="text-[#4A4540] text-[11px]">{index + 1} / {HIFI_SCREENS.length}</p>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function VenmoCaseStudy() {
   const [activeSection, setActiveSection] = useState("overview");
@@ -147,14 +181,14 @@ export default function VenmoCaseStudy() {
                 Venmo<br /><span className="italic" style={{ color: VENMO_LIGHT }}>Storefronts</span>
               </h1>
               <p className="text-[#8B8178] text-lg leading-relaxed max-w-xl mb-12">
-                Redesigning the small-business payment experience on Venmo — reducing friction,
-                building trust, and giving buyers the confidence to pay.
+                Redesigning the small-business payment experience on Venmo to reduce friction,
+                build trust, and give buyers the confidence to pay.
               </p>
               <div className="flex flex-wrap gap-6 mb-16 pb-16 border-b border-[#252118]">
                 {[
                   { label: "Role",     value: "Product Manager" },
-                  { label: "Timeline", value: "10 weeks · 2025" },
-                  { label: "Team",     value: "Val Chen, Sophia Furnival, Seth San Miguel" },
+                  { label: "Timeline", value: "7-month fellowship · 10-week capstone · 2025" },
+                  { label: "Team",     value: "Product Manager, Product Designer, Product Marketer" },
                   { label: "Methods",  value: "User Surveys · Interviews · Figma" },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex flex-col gap-1">
@@ -189,18 +223,13 @@ export default function VenmoCaseStudy() {
             <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-10 leading-tight">Meet the Team</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { name: "Val Chen",        role: "Product Manager",  desc: "Led research coordination, synthesized user insights, wrote the PRD, and directed the overall product vision." },
-                { name: "Seth San Miguel", role: "Product Designer", desc: "Owned interaction design, wireframes, and the high-fidelity Figma prototype." },
-                { name: "Sophia Furnival", role: "Product Marketer", desc: "Shaped the go-to-market narrative, competitive positioning, and stakeholder communication." },
+                { name: "Product Manager",  role: "Product Manager",  desc: "Led research coordination, synthesized user insights, wrote the PRD, and directed the overall product vision." },
+                { name: "Product Designer", role: "Product Designer", desc: "Owned interaction design, wireframes, and the high-fidelity Figma prototype." },
+                { name: "Product Marketer", role: "Product Marketer", desc: "Shaped the go-to-market narrative, competitive positioning, and stakeholder communication." },
               ].map((m, i) => (
                 <FadeUp key={m.name} delay={i * 0.12}>
                   <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6 hover:border-[#3D95CE]/30 transition-colors duration-300 h-full">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 text-lg font-bold text-white"
-                      style={{ background: `linear-gradient(135deg, ${VENMO_BLUE}60, ${VENMO_BLUE}30)` }}>
-                      {m.name.charAt(0)}
-                    </div>
-                    <p className="font-semibold text-[#F5EFE8] mb-1">{m.name}</p>
-                    <p className="text-[11px] font-medium tracking-wide uppercase mb-3" style={{ color: VENMO_BLUE }}>{m.role}</p>
+                    <p className="font-semibold text-[#F5EFE8] mb-1">{m.role}</p>
                     <p className="text-[#8B8178] text-sm leading-relaxed">{m.desc}</p>
                   </div>
                 </FadeUp>
@@ -225,7 +254,7 @@ export default function VenmoCaseStudy() {
                     Venmo offers a blend of{" "}
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">convenience</span> and{" "}
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">social engagement</span> for
-                    people handling their finances — making it uniquely positioned to serve small businesses.
+                    people handling their finances, which makes it uniquely positioned to serve small businesses.
                   </p>
                 </div>
               </div>
@@ -421,7 +450,7 @@ export default function VenmoCaseStudy() {
                   delay: 0.1,
                 },
                 {
-                  label: "OPPORTUNITIES", letter: "O", color: "#4AB8A0",
+                  label: "OPPORTUNITY", letter: "O", color: "#4AB8A0",
                   points: ["Growing Popularity for Small Businesses", "Growing emphasis on digital solutions", "Potential integration/collaboration"],
                   delay: 0.2,
                 },
@@ -493,9 +522,9 @@ export default function VenmoCaseStudy() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
               {[
-                { stat: "14/15", title: "Used Venmo for small businesses",       body: "Participants used Venmo to pay taco stands, haircut shops, and vendor markets — confirming strong product-market fit.", delay: 0 },
-                { stat: "12/15", title: "Expressed hesitation and confusion",    body: "Most felt uncertain after paying — unsure if payment went through, to the right person, or for the right amount.", delay: 0.1 },
-                { stat: "9/15",  title: "Convenience over security",             body: "Users accept minor risk over added security steps — meaning the solution must be frictionless by design.", delay: 0.2 },
+                { stat: "14/15", title: "Used Venmo for small businesses",       body: "Participants used Venmo to pay taco stands, haircut shops, and vendor markets. This confirmed strong product-market fit for a dedicated storefront feature.", delay: 0 },
+                { stat: "12/15", title: "Expressed hesitation and confusion",    body: "Most felt uncertain after paying. They were unsure if the payment went through, reached the right person, or was the correct amount.", delay: 0.1 },
+                { stat: "9/15",  title: "Convenience over security",             body: "Users accept minor risk over added security steps. This means any solution must be frictionless by design, not just secure.", delay: 0.2 },
               ].map((card, i) => (
                 <FadeUp key={i} delay={card.delay}>
                   <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6 hover:border-[#3D95CE]/30 transition-colors h-full">
@@ -510,10 +539,10 @@ export default function VenmoCaseStudy() {
             <h3 className="font-display text-2xl font-bold text-[#F5EFE8] mb-6">What our Interviewees said</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { quote: "Sometimes silly descriptions make it hard to remember transactions.",                                     name: "Dora Elle Luis-Onedera", context: "on unclear payment memos",             delay: 0 },
-                { quote: "I scanned the QR code, but still took some time to get the guy's attention.",                            name: "Musashi Avalos",         context: "on paying small businesses",          delay: 0.1 },
-                { quote: "No payment confirmation other than the Venmo screen (made me nervous for a second).",                    name: "Sarah Kim",              context: "on lack of payment confirmation",     delay: 0.2 },
-                { quote: "I always double check the username, I wish there was a confirmation that shows their business name.",     name: "Kristen Lee",            context: "on confusing verification",           delay: 0.3 },
+                { quote: "Sometimes silly descriptions make it hard to remember transactions.",                                     name: "Dora",    context: "on unclear payment memos",             delay: 0 },
+                { quote: "I scanned the QR code, but still took some time to get the guy's attention.",                            name: "Musashi", context: "on paying small businesses",          delay: 0.1 },
+                { quote: "No payment confirmation other than the Venmo screen (made me nervous for a second).",                    name: "Sarah",   context: "on lack of payment confirmation",     delay: 0.2 },
+                { quote: "I always double check the username, I wish there was a confirmation that shows their business name.",     name: "Kristen", context: "on confusing verification",           delay: 0.3 },
               ].map((item, i) => (
                 <FadeUp key={i} delay={item.delay}>
                   <div className="p-5 rounded-xl border border-[#252118] bg-[#0f0d0b] hover:border-[#3D95CE]/25 transition-colors h-full flex flex-col">
@@ -605,9 +634,8 @@ export default function VenmoCaseStudy() {
                           ))}
                         </div>
                       </div>
-                      <div className="shrink-0 w-full md:w-44 h-44 rounded-2xl border border-[#252118] flex items-center justify-center"
-                        style={{ background: `linear-gradient(135deg, ${VENMO_BLUE}15, #141210)` }}>
-                        <span className="font-display text-6xl font-bold" style={{ color: `${VENMO_BLUE}30` }}>{p.initials}</span>
+                      <div className="shrink-0 w-full md:w-44 h-44 rounded-2xl overflow-hidden border border-[#252118]">
+                        <Image src={`/Venmo/${p.name}.PNG`} alt={p.name} width={176} height={176} className="w-full h-full object-cover" />
                       </div>
                     </div>
                   </div>
@@ -695,7 +723,7 @@ export default function VenmoCaseStudy() {
             <SectionLabel text="Ideation" />
             <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-4 leading-tight">Ideation</h2>
             <p className="text-[#8B8178] text-base leading-relaxed max-w-xl mb-10">
-              We sketched 8 concept screens across the core problem areas — mapping each concept back to the pain points identified in research.
+              We sketched 8 concept screens across the core problem areas, mapping each concept directly back to the pain points identified in research.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
@@ -757,29 +785,16 @@ export default function VenmoCaseStudy() {
             <SectionLabel text="Design" />
             <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-4 leading-tight">Low Fidelity Prototypes</h2>
             <p className="text-[#8B8178] text-base leading-relaxed max-w-xl mb-10">
-              Each lo-fi screen was designed around a specific design goal — addressing legitimacy, trust, transparency, and social connection.
+              Each lo-fi screen was designed around a specific goal, addressing legitimacy, trust, transparency, and social connection in turn.
             </p>
 
-            {/* Screen concepts */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
-              {[
-                { goal: "Establishing Legitimacy",    title: "Dedicated Vendor Page",      desc: "A searchable page of vendors nearby, with catalog views and business profiles to give buyers a clear preview before paying.", delay: 0 },
-                { goal: "Building Trust",             title: "Vendor Catalog & Cart",       desc: "A detailed catalog of items with pricing, plus a cart summary that shows all items before checkout — eliminating ambiguity.", delay: 0.1 },
-                { goal: "Transparency",               title: "Contract & Order Approval",   desc: "Buyers review and approve vendor terms before proceeding to payment — ensuring both parties are aware of the purchase.", delay: 0.2 },
-                { goal: "Social Connection",          title: "QR Code + Receipt + Rating",  desc: "After QR payment, buyers receive a digital receipt. Post-purchase ratings let customers build the vendor's reputation.", delay: 0.3 },
-              ].map((screen, i) => (
-                <FadeUp key={i} delay={screen.delay}>
-                  <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6 h-full hover:border-[#3D95CE]/30 transition-colors">
-                    <div className="inline-flex items-center gap-2 mb-3 px-2.5 py-1 rounded-md text-[10px] font-medium border"
-                      style={{ borderColor: `${VENMO_BLUE}40`, color: VENMO_BLUE, background: `${VENMO_BLUE}10` }}>
-                      {screen.goal}
-                    </div>
-                    <p className="font-semibold text-[#F5EFE8] mb-2">{screen.title}</p>
-                    <p className="text-[#8B8178] text-sm leading-relaxed">{screen.desc}</p>
-                  </div>
-                </FadeUp>
-              ))}
-            </div>
+            {/* Lo-fi image */}
+            <FadeUp className="mb-10">
+              <div className="rounded-2xl overflow-hidden border border-[#252118]">
+                <Image src="/Venmo/Low Fis.PNG" alt="Low fidelity prototypes" width={1200} height={800} className="w-full h-auto" />
+              </div>
+            </FadeUp>
+
           </Section>
 
           {/* ════ SOLUTION ════════════════════════════════ */}
@@ -808,8 +823,8 @@ export default function VenmoCaseStudy() {
 
             <div className="flex flex-col gap-5">
               {[
-                { tag: "Feature 01", title: "Vendor Discovery & Storefronts",    body: "A searchable map and profile system that lets small businesses be found — with catalogs, photos, and pricing visible before any payment.", delay: 0 },
-                { tag: "Feature 02", title: "Cart, Receipt & Order Summary",      body: "A structured cart flow with itemized totals and post-payment digital receipts — eliminating uncertainty about what was paid for.", delay: 0.1 },
+                { tag: "Feature 01", title: "Vendor Discovery & Storefronts",    body: "A searchable map and profile system that lets small businesses be found, with catalogs, photos, and pricing visible before any payment is made.", delay: 0 },
+                { tag: "Feature 02", title: "Cart, Receipt & Order Summary",      body: "A structured cart flow with itemized totals and post-payment digital receipts, so buyers always know exactly what they paid for.", delay: 0.1 },
                 { tag: "Feature 03", title: "Vendor Contract & Terms Approval",  body: "Buyers review and agree to vendor terms before paying. Both parties see a clear record of the transaction.", delay: 0.2 },
                 { tag: "Feature 04", title: "Ratings & Social Trust Signals",    body: "Post-transaction ratings let buyers build a vendor's reputation, giving future customers confidence when paying.", delay: 0.3 },
               ].map((feature, i) => (
@@ -830,6 +845,12 @@ export default function VenmoCaseStudy() {
                 </FadeUp>
               ))}
             </div>
+
+            {/* Hi-fi carousel */}
+            <FadeUp delay={0.2} className="mt-10">
+              <p className="text-[10px] font-medium tracking-[0.25em] uppercase mb-4" style={{ color: VENMO_BLUE }}>High Fidelity Prototype</p>
+              <HiFiCarousel />
+            </FadeUp>
           </Section>
 
           {/* ════ DESIGN SYSTEM ═══════════════════════════ */}
@@ -837,74 +858,14 @@ export default function VenmoCaseStudy() {
             <SectionLabel text="Design System" />
             <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-4 leading-tight">Design System</h2>
             <p className="text-[#8B8178] text-base leading-relaxed max-w-xl mb-10">
-              The Venmo Storefront design system was built on top of Venmo&apos;s existing brand — maintaining familiarity while adding the structure businesses need.
+              The Venmo Storefront design system was built on top of Venmo&apos;s existing brand to maintain familiarity while adding the structure and clarity that businesses need.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {/* Typography */}
-              <FadeUp>
-                <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6">
-                  <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#4A4540] mb-4">Typography</p>
-                  <div className="flex flex-col gap-4">
-                    <div>
-                      <p className="text-2xl font-bold text-[#F5EFE8] mb-1">Athletics</p>
-                      <p className="text-[11px] text-[#4A4540]">Heading / Accent Font</p>
-                    </div>
-                    <div className="border-t border-[#252118] pt-4">
-                      <p className="text-base text-[#8B8178] mb-1" style={{ fontFamily: "Helvetica Neue, Arial, sans-serif" }}>Helvetica Neue</p>
-                      <p className="text-[11px] text-[#4A4540]">Body Text Font</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeUp>
-
-              {/* Colors */}
-              <FadeUp delay={0.1}>
-                <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6">
-                  <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#4A4540] mb-4">Colors</p>
-                  <div className="flex flex-col gap-3">
-                    <div>
-                      <p className="text-[10px] text-[#4A4540] mb-2">Primary</p>
-                      <div className="flex gap-2">
-                        {[["#008CFF", "Venmo Blue"], ["#FFFFFF", "White"], ["#000000", "Black"]].map(([hex, name]) => (
-                          <div key={hex} className="flex flex-col items-center gap-1">
-                            <div className="w-8 h-8 rounded-lg border border-[#252118]" style={{ background: hex }} />
-                            <span className="text-[9px] text-[#4A4540]">{hex}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-[#4A4540] mb-2">Neutral</p>
-                      <div className="flex gap-2">
-                        {[["#DEEFFF", "Light"], ["#2F3033", "Dark"], ["#F1F2F4", "Base"]].map(([hex, name]) => (
-                          <div key={hex} className="flex flex-col items-center gap-1">
-                            <div className="w-8 h-8 rounded-lg border border-[#252118]" style={{ background: hex }} />
-                            <span className="text-[9px] text-[#4A4540]">{hex}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </FadeUp>
-
-              {/* Components */}
-              <FadeUp delay={0.2}>
-                <div className="rounded-2xl border border-[#252118] bg-[#0f0d0b] p-6">
-                  <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#4A4540] mb-4">Components</p>
-                  <div className="flex flex-col gap-3">
-                    <div className="px-4 py-2 rounded-lg text-sm font-semibold text-white text-center" style={{ background: "#008CFF" }}>Primary Button</div>
-                    <div className="px-4 py-2 rounded-lg text-sm font-semibold text-center border" style={{ borderColor: "#008CFF", color: "#008CFF" }}>Secondary Button</div>
-                    <div className="px-3 py-2 rounded-lg text-xs border border-[#252118] text-[#8B8178] bg-[#0A0908]">Input field placeholder</div>
-                    <div className="flex gap-1">
-                      {[1,2,3,4,5].map((s) => <span key={s} className="text-yellow-400 text-sm">★</span>)}
-                      <span className="text-xs text-[#4A4540] ml-1 self-center">Rating</span>
-                    </div>
-                  </div>
-                </div>
-              </FadeUp>
-            </div>
+            <FadeUp>
+              <div className="rounded-2xl overflow-hidden border border-[#252118]">
+                <Image src="/Venmo/Design System FULL.PNG" alt="Design System" width={1400} height={900} className="w-full h-auto" />
+              </div>
+            </FadeUp>
           </Section>
 
           {/* ════ POSITIONING ════════════════════════════ */}
@@ -919,7 +880,7 @@ export default function VenmoCaseStudy() {
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">small business</span>{" "}
                     owners, <em>Venmo Storefronts</em> is the social, digital payment solution that enables
                     quick transactions and connects vendors and customers who already love using the
-                    app — making every sale{" "}
+                    app, making every sale{" "}
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">easy</span>,{" "}
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">social</span>, and{" "}
                     <span style={{ color: VENMO_LIGHT }} className="font-semibold">seamless</span>.
@@ -935,9 +896,9 @@ export default function VenmoCaseStudy() {
             <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-10 leading-tight">Go-To-Market Strategy</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
-                { phase: "1", label: "Pre-launch",  objective: "Build credibility and an organic audience within the micro- to medium-sized business community.", color: "#4A4540", delay: 0 },
-                { phase: "2", label: "Launch",      objective: "Drive user adoption by leveraging organic channels and paid advertisements.", color: VENMO_BLUE, delay: 0.1 },
-                { phase: "3", label: "Post-launch", objective: "Scale and optimize channels to encourage continuous growth and adoption.", color: "#4A4540", delay: 0.2 },
+                { phase: "1", label: "Pre-launch",  objective: "Build credibility and an organic audience within the micro- to medium-sized business community.", channels: ["Partnerships", "Social Media"], color: "#4A4540", delay: 0 },
+                { phase: "2", label: "Launch",      objective: "Drive user adoption by leveraging organic channels and paid advertisements.", channels: ["SEO", "Email Campaigns", "In-App Promotions"], color: VENMO_BLUE, delay: 0.1 },
+                { phase: "3", label: "Post-launch", objective: "Scale and optimize channels to encourage continuous growth and adoption.", channels: ["Incentives", "Referral Program"], color: "#4A4540", delay: 0.2 },
               ].map((p) => (
                 <FadeUp key={p.phase} delay={p.delay}>
                   <div className={`rounded-2xl border p-7 h-full transition-colors ${p.color === VENMO_BLUE ? "border-[#3D95CE]/40 bg-[#0d1929]" : "border-[#252118] bg-[#0f0d0b]"}`}>
@@ -945,7 +906,15 @@ export default function VenmoCaseStudy() {
                       {p.phase}
                     </div>
                     <p className="font-display text-2xl font-bold mb-3" style={{ color: p.color === VENMO_BLUE ? VENMO_LIGHT : "#F5EFE8" }}>{p.label}</p>
-                    <p className="text-[#8B8178] text-sm leading-relaxed">{p.objective}</p>
+                    <p className="text-[#8B8178] text-sm leading-relaxed mb-4">{p.objective}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {p.channels.map((ch) => (
+                        <span key={ch} className="px-2.5 py-1 rounded-md text-[10px] font-medium border"
+                          style={{ borderColor: `${p.color === VENMO_BLUE ? VENMO_BLUE : "#4A4540"}50`, color: p.color === VENMO_BLUE ? VENMO_LIGHT : "#6B6560", background: `${p.color === VENMO_BLUE ? VENMO_BLUE : "#252118"}15` }}>
+                          {ch}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </FadeUp>
               ))}
@@ -1114,7 +1083,7 @@ export default function VenmoCaseStudy() {
           {/* ════ CONCLUSION ══════════════════════════════ */}
           <Section id="conclusion" onVisible={setActiveSection}>
             <SectionLabel text="Conclusion" />
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-10 leading-tight">Wrapping Up</h2>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-[#F5EFE8] mb-10 leading-tight">Takeaways</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
               <StatCard stat="40"    label="User surveys completed"       highlight delay={0}   />
@@ -1136,12 +1105,13 @@ export default function VenmoCaseStudy() {
               </div>
             </FadeUp>
 
+            <h3 className="font-display text-2xl font-bold text-[#F5EFE8] mb-6">What I learned</h3>
             <div className="flex flex-col gap-4 mb-16">
               {[
-                "Validated that 80% of surveyed users had paid small businesses via Venmo — confirming strong product-market fit for a Storefront feature.",
-                "Synthesized research into 3 core pain points via affinity mapping: purchase confusion, local awareness, and social connection.",
-                "Designed a full GTM strategy with social media, SEO, incentive, email, and in-app channels — each with measurable KPIs.",
-                "Built end-to-end: research → affinity mapping → personas → problem framing → ideation → lo-fi → hi-fi → design system → GTM → OKRs → stakeholder presentation.",
+                "Research changes everything. Going in, I assumed the biggest problem was discovery and that users simply couldn't find small businesses on Venmo. But after 40 surveys and 15 interviews, purchase confusion and lack of trust turned out to be the real blockers. Learning to follow the data rather than my hypothesis was the most valuable thing I took away.",
+                "Writing a PRD forces clarity. I'd done product thinking before, but structuring a PRD from scratch by defining scope, success metrics, and edge cases taught me how much ambiguity hides behind obvious features. Every sentence I wrote surfaced a decision I hadn't consciously made yet.",
+                "Cross-functional work has a communication tax. Even in a 3-person team, alignment broke down fast when we weren't deliberate about it. I learned to over-communicate decisions in writing and not just in conversation, so nothing got lost between sessions.",
+                "GTM is a product decision, not an afterthought. Mapping KPIs to specific channels made me realize the product itself needed to support those metrics. That feedback loop where GTM informed design and design informed GTM back was something I didn't expect going in.",
               ].map((point, i) => (
                 <FadeUp key={i} delay={i * 0.08}>
                   <div className="flex gap-4 items-start">
