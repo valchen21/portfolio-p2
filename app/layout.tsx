@@ -20,8 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-[#0A0908] text-[#F5EFE8] antialiased overflow-x-hidden">
-        {/* Noise texture overlay */}
-        <div className="noise-overlay" aria-hidden="true" />
         {children}
       </body>
     </html>

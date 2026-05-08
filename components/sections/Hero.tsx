@@ -18,47 +18,6 @@ function HeroBackground() {
       {/* Dot grid */}
       <div className="absolute inset-0 dot-grid opacity-100" />
 
-      {/* Blue orb — top right */}
-      <motion.div
-        animate={{
-          x: [0, 40, -20, 0],
-          y: [0, -30, 20, 0],
-          scale: [1, 1.08, 0.96, 1],
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(91,174,204,0.18) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      {/* Cooler orb — bottom left */}
-      <motion.div
-        animate={{
-          x: [0, -30, 20, 0],
-          y: [0, 30, -20, 0],
-          scale: [1, 0.94, 1.06, 1],
-        }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        className="absolute -bottom-48 -left-40 w-[700px] h-[700px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(91,174,204,0.07) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
-      />
-
-      {/* Subtle center warmth */}
-      <motion.div
-        animate={{ opacity: [0.6, 0.9, 0.6] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px]"
-        style={{
-          background: "radial-gradient(ellipse, rgba(91,174,204,0.05) 0%, transparent 65%)",
-          filter: "blur(30px)",
-        }}
-      />
-
       {/* Horizon line */}
       <div
         className="absolute bottom-0 left-0 right-0 h-px"
@@ -99,12 +58,28 @@ function hexRgb(hex: string) {
   return `${r}, ${g}, ${b}`;
 }
 
-function FloatingBubbles() {
+function FloatingBubbles({
+  onInteractStart,
+  onInteractEnd,
+}: {
+  onInteractStart?: () => void;
+  onInteractEnd?: () => void;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const elRefs = useRef<(HTMLDivElement | null)[]>([]);
   const balls = useRef<BallState[]>([]);
   const rafId = useRef<number | null>(null);
   const ptrHistory = useRef<{ x: number; y: number; t: number }[]>([]);
+  const [interactive, setInteractive] = useState(false);
+  const physicsActive = useRef(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      physicsActive.current = true;
+      setInteractive(true);
+    }, 3500);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -138,6 +113,10 @@ function FloatingBubbles() {
     });
 
     const tick = () => {
+      if (!physicsActive.current) {
+        rafId.current = requestAnimationFrame(tick);
+        return;
+      }
       const cW = container.clientWidth;
       const cH = container.clientHeight;
       const bs = balls.current;
@@ -220,6 +199,7 @@ function FloatingBubbles() {
     ptrHistory.current = [{ x: e.clientX - rect.left, y: e.clientY - rect.top, t: performance.now() }];
     const el = elRefs.current[i];
     if (el) { el.style.zIndex = "50"; el.style.cursor = "grabbing"; }
+    onInteractStart?.();
   };
 
   const onPointerMove = (i: number) => (e: React.PointerEvent<HTMLDivElement>) => {
@@ -260,6 +240,7 @@ function FloatingBubbles() {
 
     const el = elRefs.current[i];
     if (el) { el.style.zIndex = "20"; el.style.cursor = "grab"; }
+    onInteractEnd?.();
   };
 
   return (
@@ -284,8 +265,8 @@ function FloatingBubbles() {
             borderRadius: "50%",
             opacity: 0,
             transition: "opacity 0.5s ease",
-            cursor: "grab",
-            pointerEvents: "auto",
+            cursor: interactive ? "grab" : "default",
+            pointerEvents: interactive ? "auto" : "none",
             touchAction: "none",
             userSelect: "none",
             zIndex: 20,
@@ -442,6 +423,19 @@ export default function Hero() {
   const lines = siteConfig.headline.split("\n");
   const [bubblesVisible, setBubblesVisible] = useState(true);
   const [resetKey, setResetKey] = useState(0);
+  const autoResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelAutoReset = () => {
+    if (autoResetTimer.current) {
+      clearTimeout(autoResetTimer.current);
+      autoResetTimer.current = null;
+    }
+  };
+  const scheduleAutoReset = () => {
+    cancelAutoReset();
+    autoResetTimer.current = setTimeout(() => setResetKey((k) => k + 1), 10000);
+  };
+  useEffect(() => () => cancelAutoReset(), []);
 
   return (
     <section
@@ -451,13 +445,19 @@ export default function Hero() {
       <HeroBackground />
 
       {/* 8-ball physics bubbles */}
-      {bubblesVisible && <FloatingBubbles key={resetKey} />}
+      {bubblesVisible && (
+        <FloatingBubbles
+          key={resetKey}
+          onInteractStart={cancelAutoReset}
+          onInteractEnd={scheduleAutoReset}
+        />
+      )}
 
       {/* Welcome note */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 1.8, ease: [0.43, 0.195, 0.02, 1] }}
+        transition={{ duration: 0.4, delay: 0, ease: [0.43, 0.195, 0.02, 1] }}
         className="absolute hidden lg:block pointer-events-none"
         style={{ right: "3%", top: "15%", transform: "translateY(-50%)", zIndex: 14 }}
       >
