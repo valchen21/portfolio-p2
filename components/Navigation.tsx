@@ -8,11 +8,12 @@ import { useMode } from "@/components/ModeContext";
 const baseNavItems = [
   { label: "Home", href: "#hero" },
   { label: "Projects", href: "#projects" },
+  { label: "Playground", href: "#playground" },
   { label: "Resume", href: "#resume" },
   { label: "About", href: "#about" },
 ];
 
-const sectionIds = ["hero", "projects", "resume", "about"];
+const sectionIds = ["hero", "projects", "playground", "resume", "about"];
 
 function useActiveSection() {
   const [active, setActive] = useState("hero");

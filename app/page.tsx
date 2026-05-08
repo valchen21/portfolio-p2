@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/sections/Hero";
 import Projects from "@/components/sections/Projects";
+import Playground from "@/components/sections/Playground";
 import Resume from "@/components/sections/Resume";
 import About from "@/components/sections/About";
 import Footer from "@/components/sections/Footer";
@@ -42,6 +43,7 @@ export default function Home() {
           <Navigation />
           <Hero />
           <Projects />
+          <Playground />
           <Resume />
           <About />
           <Footer />
