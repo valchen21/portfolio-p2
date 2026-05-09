@@ -7,7 +7,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
-import Chat from "./Chat";
 
 const MODEL_URL = "/Playground/outrun_arcade_cabinet.glb";
 const COIN_URL = "/Playground/dollar_coin.glb";
@@ -30,14 +29,12 @@ type PlayPhase = "default" | "zooming" | "deep-zooming";
 function Scene({
   margin = 0.75,
   coinActive = false,
-  onCoinTossStart,
   onCoinTossComplete,
   onDeepZoomComplete,
   phase = "default",
 }: {
   margin?: number;
   coinActive?: boolean;
-  onCoinTossStart?: () => void;
   onCoinTossComplete?: () => void;
   onDeepZoomComplete?: () => void;
   phase?: PlayPhase;
@@ -210,7 +207,6 @@ function Scene({
       <Coin
         active={coinActive}
         arcadeMaxDim={sceneInfo.maxDim}
-        onTossStart={onCoinTossStart}
         onTossComplete={onCoinTossComplete}
       />
     </>
@@ -220,12 +216,10 @@ function Scene({
 function Coin({
   active,
   arcadeMaxDim,
-  onTossStart,
   onTossComplete,
 }: {
   active: boolean;
   arcadeMaxDim: number;
-  onTossStart?: () => void;
   onTossComplete?: () => void;
 }) {
   const { scene } = useGLTF(COIN_URL);
@@ -238,30 +232,6 @@ function Coin({
   const [tossing, setTossing] = useState(false);
   const [hidden, setHidden] = useState(false);
   const spinSpeedRef = useRef(COIN_IDLE_SPIN_RAD_PER_SEC);
-  const flipAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Load + warm up the coin flip sound on mount
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const a = new Audio("/Playground/coin%20flip.mp3");
-    a.preload = "auto";
-    a.volume = 0.7;
-    flipAudioRef.current = a;
-    // Warm up so the first play isn't blocked by autoplay policy
-    a.muted = true;
-    a.play()
-      .then(() => {
-        a.pause();
-        a.currentTime = 0;
-        a.muted = false;
-      })
-      .catch(() => {
-        a.muted = false;
-      });
-    return () => {
-      a.pause();
-    };
-  }, []);
 
   // Auto-center the coin, compute scale + label offset relative to arcade
   const { coinScale, labelY } = useMemo(() => {
@@ -294,7 +264,7 @@ function Coin({
 
   // Idle/entrance final position (also the toss start)
   const IDLE_X = arcadeMaxDim * 0.55;
-  const IDLE_Y = -arcadeMaxDim * 0.18;
+  const IDLE_Y = 0;
   const IDLE_Z = arcadeMaxDim * 0.2;
 
   // Initial scale set imperatively to avoid JSX prop conflicting with toss mutations
@@ -390,23 +360,13 @@ function Coin({
     if (startTimeRef.current === null) return;
     const elapsed = performance.now() - startTimeRef.current;
     if (elapsed < COIN_DURATION_MS) return; // entrance not done yet
-    const a = flipAudioRef.current;
-    if (a) {
-      try {
-        a.currentTime = 0;
-        a.play().catch(() => {});
-      } catch {
-        /* ignore */
-      }
-    }
     tossStartRef.current = performance.now();
     setTossing(true);
-    onTossStart?.();
   };
 
   if (!active || hidden) return null;
 
-  const showLabel = hovered && !tossing;
+  const showLabel = !tossing;
 
   return (
     <group
@@ -425,25 +385,185 @@ function Coin({
       <Html position={[0, labelY, 0]} center style={{ pointerEvents: "none" }}>
         <div
           style={{
-            color: "#F5EFE8",
-            fontSize: 18,
-            fontWeight: 600,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            background: "rgba(10, 9, 8, 0.7)",
-            padding: "8px 16px",
-            borderRadius: 999,
-            border: "1px solid rgba(245,239,232,0.18)",
-            backdropFilter: "blur(8px)",
-            whiteSpace: "nowrap",
-            fontFamily: "Inter, system-ui, sans-serif",
-            userSelect: "none",
             opacity: showLabel ? 1 : 0,
-            transform: showLabel ? "translateY(0)" : "translateY(6px)",
-            transition: "opacity 280ms ease, transform 280ms ease",
+            transform: showLabel
+              ? "translateY(0) scale(1)"
+              : "translateY(10px) scale(0.9)",
+            transition:
+              "opacity 280ms ease, transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+            userSelect: "none",
+            filter:
+              "drop-shadow(0 8px 24px rgba(0,0,0,0.6)) drop-shadow(0 0 22px rgba(255,140,50,0.5))",
           }}
         >
-          Insert Coin
+          <div className="coin-cta">
+            <span className="coin-cta__gem coin-cta__gem--l" />
+            <span className="coin-cta__gem coin-cta__gem--r" />
+            <div className="coin-cta__body">
+              <svg
+                className="coin-cta__cross coin-cta__cross--l"
+                viewBox="0 0 22 22"
+                width="22"
+                height="22"
+              >
+                <g
+                  stroke="rgba(255, 220, 170, 0.55)"
+                  strokeWidth="3.4"
+                  strokeLinecap="round"
+                >
+                  <line x1="4" y1="4" x2="18" y2="18" />
+                  <line x1="18" y1="4" x2="4" y2="18" />
+                </g>
+              </svg>
+              <svg
+                className="coin-cta__cross coin-cta__cross--r"
+                viewBox="0 0 22 22"
+                width="22"
+                height="22"
+              >
+                <g
+                  stroke="rgba(255, 220, 170, 0.55)"
+                  strokeWidth="3.4"
+                  strokeLinecap="round"
+                >
+                  <line x1="4" y1="4" x2="18" y2="18" />
+                  <line x1="18" y1="4" x2="4" y2="18" />
+                </g>
+              </svg>
+              <span className="coin-cta__shine" />
+              <span className="coin-cta__text">Insert Coin</span>
+            </div>
+          </div>
+
+          <style jsx>{`
+            .coin-cta {
+              position: relative;
+              display: inline-block;
+              padding: 3px;
+              border-radius: 999px;
+              background: linear-gradient(
+                180deg,
+                #ffe7a8 0%,
+                #f5b95e 22%,
+                #c97a2c 60%,
+                #6e370e 100%
+              );
+              box-shadow:
+                inset 0 2px 0 rgba(255, 240, 200, 0.95),
+                inset 0 -2px 0 rgba(50, 20, 4, 0.75),
+                0 0 0 1px rgba(50, 20, 4, 0.55);
+              animation: coin-cta-breathe 2.6s ease-in-out infinite;
+              white-space: nowrap;
+            }
+            .coin-cta__body {
+              position: relative;
+              padding: 11px 64px;
+              border-radius: 999px;
+              background:
+                radial-gradient(
+                  ellipse 70% 100% at 50% -15%,
+                  rgba(255, 230, 180, 0.9) 0%,
+                  transparent 60%
+                ),
+                linear-gradient(
+                  180deg,
+                  #f3924a 0%,
+                  #e26818 55%,
+                  #a83a08 100%
+                );
+              box-shadow:
+                inset 0 2px 3px rgba(255, 230, 180, 0.7),
+                inset 0 -3px 6px rgba(70, 24, 4, 0.6),
+                inset 0 0 30px rgba(255, 130, 50, 0.35);
+              overflow: hidden;
+              isolation: isolate;
+            }
+            .coin-cta__cross {
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              z-index: 1;
+              opacity: 0.85;
+            }
+            .coin-cta__cross--l {
+              left: 18px;
+            }
+            .coin-cta__cross--r {
+              right: 18px;
+            }
+            .coin-cta__shine {
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(
+                110deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.55) 50%,
+                transparent 70%
+              );
+              transform: translateX(-110%);
+              animation: coin-cta-shine 2.8s ease-in-out infinite;
+              z-index: 2;
+              pointer-events: none;
+            }
+            .coin-cta__text {
+              position: relative;
+              z-index: 3;
+              font-family: 'Inter', system-ui, sans-serif;
+              font-weight: 900;
+              font-size: 18px;
+              letter-spacing: 0.05em;
+              color: #fff1c8;
+              text-shadow:
+                0 1px 0 #6e2a08,
+                0 2px 0 #4a1804,
+                0 3px 0 #2a0e02,
+                0 0 10px rgba(255, 220, 130, 0.65);
+            }
+            .coin-cta__gem {
+              position: absolute;
+              top: 50%;
+              width: 9px;
+              height: 9px;
+              transform: translateY(-50%) rotate(45deg);
+              background: linear-gradient(
+                180deg,
+                #ffa080 0%,
+                #d83c40 55%,
+                #6a1418 100%
+              );
+              box-shadow:
+                inset 0 1px 0 rgba(255, 220, 200, 0.9),
+                inset 0 -1px 0 rgba(50, 4, 4, 0.8),
+                0 0 8px rgba(255, 100, 80, 0.6);
+              z-index: 4;
+            }
+            .coin-cta__gem--l {
+              left: -3px;
+            }
+            .coin-cta__gem--r {
+              right: -3px;
+            }
+            @keyframes coin-cta-breathe {
+              0%,
+              100% {
+                transform: scale(1);
+              }
+              50% {
+                transform: scale(1.04);
+              }
+            }
+            @keyframes coin-cta-shine {
+              0% {
+                transform: translateX(-110%);
+              }
+              55% {
+                transform: translateX(110%);
+              }
+              100% {
+                transform: translateX(110%);
+              }
+            }
+          `}</style>
         </div>
       </Html>
     </group>
@@ -454,7 +574,6 @@ export default function PlayPage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [coinActive, setCoinActive] = useState(false);
-  const [chatHidden, setChatHidden] = useState(false);
   const [phase, setPhase] = useState<PlayPhase>("default");
   const [resetKey, setResetKey] = useState(0);
 
@@ -472,9 +591,13 @@ export default function PlayPage() {
     }
   }, [router]);
 
+  // Coin spins from the moment the scene is ready
+  useEffect(() => {
+    if (ready) setCoinActive(true);
+  }, [ready, resetKey]);
+
   const handleReplay = () => {
     setCoinActive(false);
-    setChatHidden(false);
     setPhase("default");
     setResetKey((k) => k + 1);
   };
@@ -489,19 +612,6 @@ export default function PlayPage() {
       return () => clearTimeout(t);
     }
   }, [phase]);
-  useEffect(() => {
-    if (!ready) return;
-    if (typeof window === "undefined") return;
-    const swoosh = new Audio("/Playground/Swoosh.mp3");
-    swoosh.preload = "auto";
-    swoosh.volume = 0.75;
-    // The PLAY NOW click is a recent user gesture, so direct play should
-    // work; the .catch() silently absorbs autoplay-policy denials.
-    swoosh.play().catch(() => {});
-    return () => {
-      swoosh.pause();
-    };
-  }, [ready]);
 
   if (!ready) {
     return <main className="min-h-screen w-full bg-[#0A0908]" />;
@@ -573,20 +683,11 @@ export default function PlayPage() {
             key={`scene-${resetKey}`}
             coinActive={coinActive}
             phase={phase}
-            onCoinTossStart={() => setChatHidden(true)}
             onCoinTossComplete={() => setPhase("zooming")}
             onDeepZoomComplete={() => router.push("/playground-ingame")}
           />
         </Suspense>
       </Canvas>
-
-      {/* iMessage-style chat overlay */}
-      <Chat
-        key={`chat-${resetKey}`}
-        onTriggerCoin={() => setCoinActive(true)}
-        hidden={chatHidden}
-      />
-
 
       {/* Replay button — bottom-right */}
       <motion.div

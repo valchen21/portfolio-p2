@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/data/content";
-import { useMode } from "@/components/ModeContext";
 
-const baseNavItems = [
+const navItems = [
   { label: "Home", href: "#hero" },
   { label: "Projects", href: "#projects" },
   { label: "Playground", href: "#playground" },
@@ -65,13 +64,6 @@ export default function Navigation() {
   const active = useActiveSection();
   const scrolled = useScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { isPlayMode, toggleMode, accentHex } = useMode();
-
-  const navItems = baseNavItems.map((item) =>
-    item.href === "#projects"
-      ? { ...item, label: isPlayMode ? "Passion Projects" : "Work Projects" }
-      : item
-  );
 
   return (
     <>
@@ -128,29 +120,6 @@ export default function Navigation() {
                 </button>
               );
             })}
-
-            {/* Mode toggle */}
-            <button
-              onClick={toggleMode}
-              className="ml-3 flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium tracking-widest uppercase transition-all duration-300"
-              style={{
-                background: isPlayMode ? "rgba(240,96,158,0.12)" : "rgba(91,174,204,0.10)",
-                border: `1px solid ${isPlayMode ? "rgba(240,96,158,0.35)" : "rgba(91,174,204,0.25)"}`,
-                color: accentHex,
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: 6, height: 6,
-                  borderRadius: "50%",
-                  background: accentHex,
-                  boxShadow: `0 0 6px ${accentHex}`,
-                  transition: "background 0.3s, box-shadow 0.3s",
-                }}
-              />
-              {isPlayMode ? "Play" : "Work"}
-            </button>
 
             <button
               onClick={() => window.dispatchEvent(new Event("openResume"))}
@@ -210,17 +179,6 @@ export default function Navigation() {
                 </button>
               ))}
               <div className="h-px bg-[#252118] my-2" />
-              <button
-                onClick={() => { toggleMode(); setMobileOpen(false); }}
-                className="text-left px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 flex items-center gap-3"
-                style={{ color: accentHex }}
-              >
-                <span style={{
-                  display: "inline-block", width: 7, height: 7, borderRadius: "50%",
-                  background: accentHex, boxShadow: `0 0 6px ${accentHex}`,
-                }} />
-                {isPlayMode ? "Switch to Work mode" : "Switch to Play mode"}
-              </button>
               <button
                 onClick={() => window.dispatchEvent(new Event("openResume"))}
                 className="text-left px-4 py-3 text-base font-medium rounded-lg transition-all duration-200"

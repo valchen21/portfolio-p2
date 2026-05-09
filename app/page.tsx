@@ -10,9 +10,7 @@ import About from "@/components/sections/About";
 import Footer from "@/components/sections/Footer";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import ResumeModal from "@/components/ui/ResumeModal";
-import Confetti from "@/components/ui/Confetti";
 import EntranceIntro from "@/components/EntranceIntro";
-import { ModeProvider } from "@/components/ModeContext";
 
 export default function Home() {
   // null = undecided (SSR / first paint); true = show intro; false = intro done
@@ -34,11 +32,10 @@ export default function Home() {
   }
 
   return (
-    <ModeProvider>
+    <>
       {heroMounted && (
         <main>
           <ScrollProgress />
-          <Confetti />
           <ResumeModal />
           <Navigation />
           <Hero />
@@ -55,6 +52,6 @@ export default function Home() {
           onComplete={() => setShowIntro(false)}
         />
       )}
-    </ModeProvider>
+    </>
   );
 }
