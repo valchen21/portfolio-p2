@@ -177,9 +177,18 @@ export default function PokeGladeCaseStudy() {
                 </span>
               </div>
 
-              <h1 className="font-display text-6xl md:text-7xl lg:text-8xl font-bold text-[#F5EFE8] leading-tight tracking-tight mb-4">
-                Poke<span className="italic" style={{ color: POKE_LIGHT }}>Glade</span>
-              </h1>
+              <div className="flex items-center gap-5 mb-4">
+                <Image
+                  src="/PokeGlade/PokéGlade Icon.png"
+                  alt="PokeGlade Icon"
+                  width={80}
+                  height={80}
+                  className="rounded-2xl"
+                />
+                <h1 className="font-display text-6xl md:text-7xl lg:text-8xl font-bold text-[#F5EFE8] leading-tight tracking-tight">
+                  Poke<span className="italic" style={{ color: POKE_LIGHT }}>Glade</span>
+                </h1>
+              </div>
 
               <p className="text-[#8B8178] text-lg leading-relaxed max-w-xl mb-12">
                 A browser-based idle Pokémon adventure built entirely in vanilla JS —
