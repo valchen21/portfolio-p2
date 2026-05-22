@@ -421,8 +421,9 @@ function RotatingPhrase({ delay }: { delay: number }) {
 
 export default function Hero() {
   const lines = siteConfig.headline.split("\n");
-  const [bubblesVisible, setBubblesVisible] = useState(true);
+  const [bubblesVisible, setBubblesVisible] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [polaroidHovered, setPolaroidHovered] = useState(false);
   const autoResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cancelAutoReset = () => {
@@ -454,21 +455,31 @@ export default function Hero() {
       )}
 
       {/* Welcome note */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: 0, ease: [0.43, 0.195, 0.02, 1] }}
-        className="absolute hidden lg:block pointer-events-none"
-        style={{ right: "3%", top: "15%", transform: "translateY(-50%)", zIndex: 14 }}
+      <div
+        className="absolute hidden lg:block"
+        style={{ right: "calc(3% - 20px)", top: "50%", transform: "translateY(-50%)", zIndex: 14 }}
       >
-        <Image
-          src="/Landing Page/Welcome!.png"
-          alt="Welcome"
-          width={1000}
-          height={700}
-          className="w-[680px] h-auto"
-        />
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, rotate: 0 }}
+          animate={{ opacity: 1, scale: 1, rotate: polaroidHovered ? 3 : 0 }}
+          transition={{
+            opacity: { duration: 0.4, ease: [0.43, 0.195, 0.02, 1] },
+            scale: { duration: 0.4, ease: [0.43, 0.195, 0.02, 1] },
+            rotate: { type: "spring", stiffness: 180, damping: 10 },
+          }}
+          style={{ transformOrigin: "50% 4%" }}
+          onMouseEnter={() => setPolaroidHovered(true)}
+          onMouseLeave={() => setPolaroidHovered(false)}
+        >
+          <Image
+            src="/Landing Page/Welcome!.png"
+            alt="Welcome"
+            width={1000}
+            height={700}
+            className="w-[680px] h-auto"
+          />
+        </motion.div>
+      </div>
 
       {/* Main content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-24">
